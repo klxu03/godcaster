@@ -49,7 +49,7 @@ class Whisper:
             except youtube_dl.utils.ExtractorError as err:
                 raise RuntimeError("Error: YT DL is unable to download video")
 
-    def yt_transcribe(self, yt_url: str, task: str) -> str:
+    def yt_transcribe(self, yt_url: str, task: str):
         with tempfile.TemporaryDirectory() as tmpdirname:
             filepath = os.path.join(tmpdirname, "video.mp4")
             self.download_yt_audio(yt_url, filepath)
@@ -59,6 +59,6 @@ class Whisper:
         inputs = ffmpeg_read(inputs, self.pipe.feature_extractor.sampling_rate)
         inputs = {"array": inputs, "sampling_rate": self.pipe.feature_extractor.sampling_rate}
 
-        text = self.pipe(inputs, batch_size=self.BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
-
-        return text
+        res = self.pipe(inputs, batch_size=self.BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)
+        print(f"Captions:\n{res['text']}")
+        return res
