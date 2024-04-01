@@ -10,6 +10,13 @@ python = "^3.10"
 torch = "^2.2.2"
 yt-dlp = "^2024.3.10"
 transformers = "^4.39.2"
+whisperx = {git = "https://github.com/m-bain/whisperx.git"}
+pandas = "^2.2.1"
+torchaudio = "^2.2.2"
+nltk = "^3.8.1"
+faster-whisper = "^1.0.1"
+setuptools = "^69.2.0"
+pyannote-audio = "^3.1.1"
 
 
 [build-system]

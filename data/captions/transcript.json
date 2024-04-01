@@ -1,138 +1,851 @@
-{
-  "text": " I just gotta say the IG yelling from both teams so far has been immaculate. Oh it's been a treat to watch. They've always, it seems like they always pick the right side. First trip cleared, the dog went all the way around the pillar! TenZ does it again! And TenZ on OT! But can they counter? No! TenZ with four! Second gets the last! OT on the cards! That's the Tenz we love. That's vintage Tenz. What is this? Oh my gosh! It's like his bullets just have a magnet on everybody's head. And that was to force OT. I mean, he gets picked there. Map's probably over. Single-handedly takes out three members.",
-  "chunks": [
-    {
-      "timestamp": [
-        0.0,
-        5.0
-      ],
-      "text": " I just gotta say the IG yelling from both teams so far has been immaculate."
-    },
-    {
-      "timestamp": [
-        5.0,
-        7.0
-      ],
-      "text": " Oh it's been a treat to watch."
-    },
-    {
-      "timestamp": [
-        7.0,
-        10.0
-      ],
-      "text": " They've always, it seems like they always pick the right side."
-    },
-    {
-      "timestamp": [
-        11.0,
-        15.0
-      ],
-      "text": " First trip cleared, the dog went all the way around the pillar!"
-    },
-    {
-      "timestamp": [
-        15.0,
-        17.0
-      ],
-      "text": " TenZ does it again!"
-    },
-    {
-      "timestamp": [
-        18.0,
-        20.0
-      ],
-      "text": " And TenZ on OT!"
-    },
-    {
-      "timestamp": [
-        20.0,
-        22.0
-      ],
-      "text": " But can they counter?"
-    },
-    {
-      "timestamp": [
-        22.0,
-        24.0
-      ],
-      "text": " No! TenZ with four!"
-    },
-    {
-      "timestamp": [
-        24.0,
-        25.76
-      ],
-      "text": " Second gets the last!"
-    },
-    {
-      "timestamp": [
-        26.52,
-        27.82
-      ],
-      "text": " OT on the cards!"
-    },
-    {
-      "timestamp": [
-        28.72,
-        29.78
-      ],
-      "text": " That's the Tenz we love."
-    },
-    {
-      "timestamp": [
-        29.96,
-        30.94
-      ],
-      "text": " That's vintage Tenz."
-    },
-    {
-      "timestamp": [
-        30.96,
-        31.94
-      ],
-      "text": " What is this?"
-    },
-    {
-      "timestamp": [
-        33.04,
-        35.02
-      ],
-      "text": " Oh my gosh!"
-    },
-    {
-      "timestamp": [
-        36.24,
-        39.46
-      ],
-      "text": " It's like his bullets just have a magnet on everybody's head."
-    },
-    {
-      "timestamp": [
-        40.08,
-        41.2
-      ],
-      "text": " And that was to force OT."
-    },
-    {
-      "timestamp": [
-        41.6,
-        43.14
-      ],
-      "text": " I mean, he gets picked there."
-    },
-    {
-      "timestamp": [
-        43.6,
-        44.36
-      ],
-      "text": " Map's probably over."
-    },
-    {
-      "timestamp": [
-        45.84,
-        48.08
-      ],
-      "text": " Single-handedly takes out three members."
-    }
-  ]
-}
+[
+  {
+    "start": 1.305,
+    "end": 5.087,
+    "text": " And I just gotta say, the IG yelling from both teams so far has been immaculate.",
+    "words": [
+      {
+        "word": "And",
+        "start": 1.305,
+        "end": 1.365,
+        "score": 0.05
+      },
+      {
+        "word": "I",
+        "start": 1.385,
+        "end": 1.405,
+        "score": 0.913
+      },
+      {
+        "word": "just",
+        "start": 1.425,
+        "end": 1.505,
+        "score": 0.046
+      },
+      {
+        "word": "gotta",
+        "start": 1.525,
+        "end": 1.665,
+        "score": 0.213
+      },
+      {
+        "word": "say,",
+        "start": 1.685,
+        "end": 1.785,
+        "score": 0.206
+      },
+      {
+        "word": "the",
+        "start": 1.805,
+        "end": 1.885,
+        "score": 0.817
+      },
+      {
+        "word": "IG",
+        "start": 1.925,
+        "end": 2.045,
+        "score": 0.488
+      },
+      {
+        "word": "yelling",
+        "start": 2.085,
+        "end": 2.305,
+        "score": 0.802
+      },
+      {
+        "word": "from",
+        "start": 2.325,
+        "end": 2.446,
+        "score": 0.658
+      },
+      {
+        "word": "both",
+        "start": 2.486,
+        "end": 2.726,
+        "score": 0.768
+      },
+      {
+        "word": "teams",
+        "start": 3.006,
+        "end": 3.206,
+        "score": 0.72
+      },
+      {
+        "word": "so",
+        "start": 3.226,
+        "end": 3.346,
+        "score": 0.976
+      },
+      {
+        "word": "far",
+        "start": 3.366,
+        "end": 3.526,
+        "score": 0.843
+      },
+      {
+        "word": "has",
+        "start": 3.546,
+        "end": 3.666,
+        "score": 0.653
+      },
+      {
+        "word": "been",
+        "start": 3.686,
+        "end": 3.866,
+        "score": 0.53
+      },
+      {
+        "word": "immaculate.",
+        "start": 4.586,
+        "end": 5.087,
+        "score": 0.459
+      }
+    ]
+  },
+  {
+    "start": 5.187,
+    "end": 6.287,
+    "text": "Oh, it's been a treat to watch.",
+    "words": [
+      {
+        "word": "Oh,",
+        "start": 5.187,
+        "end": 5.267,
+        "score": 0.264
+      },
+      {
+        "word": "it's",
+        "start": 5.307,
+        "end": 5.407,
+        "score": 0.229
+      },
+      {
+        "word": "been",
+        "start": 5.427,
+        "end": 5.547,
+        "score": 0.637
+      },
+      {
+        "word": "a",
+        "start": 5.587,
+        "end": 5.647,
+        "score": 0.504
+      },
+      {
+        "word": "treat",
+        "start": 5.667,
+        "end": 5.887,
+        "score": 0.757
+      },
+      {
+        "word": "to",
+        "start": 5.907,
+        "end": 6.007,
+        "score": 0.844
+      },
+      {
+        "word": "watch.",
+        "start": 6.047,
+        "end": 6.287,
+        "score": 0.948
+      }
+    ]
+  },
+  {
+    "start": 7.548,
+    "end": 9.649,
+    "text": "They've always, it seems like they always pick the right side.",
+    "words": [
+      {
+        "word": "They've",
+        "start": 7.548,
+        "end": 7.708,
+        "score": 0.212
+      },
+      {
+        "word": "always,",
+        "start": 7.768,
+        "end": 8.088,
+        "score": 0.805
+      },
+      {
+        "word": "it",
+        "start": 8.108,
+        "end": 8.348,
+        "score": 0.447
+      },
+      {
+        "word": "seems",
+        "start": 8.368,
+        "end": 8.508,
+        "score": 0.725
+      },
+      {
+        "word": "like",
+        "start": 8.528,
+        "end": 8.648,
+        "score": 0.058
+      },
+      {
+        "word": "they",
+        "start": 8.668,
+        "end": 8.788,
+        "score": 0.799
+      },
+      {
+        "word": "always",
+        "start": 8.808,
+        "end": 8.988,
+        "score": 0.992
+      },
+      {
+        "word": "pick",
+        "start": 9.028,
+        "end": 9.148,
+        "score": 0.339
+      },
+      {
+        "word": "the",
+        "start": 9.169,
+        "end": 9.229,
+        "score": 0.94
+      },
+      {
+        "word": "right",
+        "start": 9.269,
+        "end": 9.389,
+        "score": 0.954
+      },
+      {
+        "word": "side.",
+        "start": 9.429,
+        "end": 9.649,
+        "score": 0.895
+      }
+    ]
+  },
+  {
+    "start": 11.269,
+    "end": 14.511,
+    "text": "First trip cleared, the dog went all the way around the pillar!",
+    "words": [
+      {
+        "word": "First",
+        "start": 11.269,
+        "end": 11.47,
+        "score": 0.784
+      },
+      {
+        "word": "trip",
+        "start": 11.51,
+        "end": 11.71,
+        "score": 0.767
+      },
+      {
+        "word": "cleared,",
+        "start": 11.75,
+        "end": 12.01,
+        "score": 0.762
+      },
+      {
+        "word": "the",
+        "start": 12.03,
+        "end": 12.09,
+        "score": 0.965
+      },
+      {
+        "word": "dog",
+        "start": 12.13,
+        "end": 12.41,
+        "score": 0.891
+      },
+      {
+        "word": "went",
+        "start": 12.61,
+        "end": 12.75,
+        "score": 0.315
+      },
+      {
+        "word": "all",
+        "start": 12.89,
+        "end": 13.25,
+        "score": 0.518
+      },
+      {
+        "word": "the",
+        "start": 13.27,
+        "end": 13.39,
+        "score": 0.363
+      },
+      {
+        "word": "way",
+        "start": 13.41,
+        "end": 13.651,
+        "score": 0.549
+      },
+      {
+        "word": "around",
+        "start": 13.711,
+        "end": 13.891,
+        "score": 0.154
+      },
+      {
+        "word": "the",
+        "start": 13.931,
+        "end": 14.051,
+        "score": 0.456
+      },
+      {
+        "word": "pillar!",
+        "start": 14.091,
+        "end": 14.511,
+        "score": 0.592
+      }
+    ]
+  },
+  {
+    "start": 15.291,
+    "end": 16.592,
+    "text": "TenZ does it again!",
+    "words": [
+      {
+        "word": "TenZ",
+        "start": 15.291,
+        "end": 15.631,
+        "score": 0.538
+      },
+      {
+        "word": "does",
+        "start": 15.691,
+        "end": 15.851,
+        "score": 0.311
+      },
+      {
+        "word": "it",
+        "start": 15.932,
+        "end": 15.992,
+        "score": 0.276
+      },
+      {
+        "word": "again!",
+        "start": 16.032,
+        "end": 16.592,
+        "score": 0.689
+      }
+    ]
+  },
+  {
+    "start": 18.273,
+    "end": 19.513,
+    "text": "And TenZ on OT!",
+    "words": [
+      {
+        "word": "And",
+        "start": 18.273,
+        "end": 18.393,
+        "score": 0.239
+      },
+      {
+        "word": "TenZ",
+        "start": 18.413,
+        "end": 18.693,
+        "score": 0.582
+      },
+      {
+        "word": "on",
+        "start": 18.793,
+        "end": 18.873,
+        "score": 0.612
+      },
+      {
+        "word": "OT!",
+        "start": 18.993,
+        "end": 19.513,
+        "score": 0.848
+      }
+    ]
+  },
+  {
+    "start": 20.594,
+    "end": 21.514,
+    "text": "But can they counter?",
+    "words": [
+      {
+        "word": "But",
+        "start": 20.594,
+        "end": 20.734,
+        "score": 0.483
+      },
+      {
+        "word": "can",
+        "start": 20.754,
+        "end": 20.914,
+        "score": 0.965
+      },
+      {
+        "word": "they",
+        "start": 20.954,
+        "end": 21.094,
+        "score": 0.735
+      },
+      {
+        "word": "counter?",
+        "start": 21.134,
+        "end": 21.514,
+        "score": 0.864
+      }
+    ]
+  },
+  {
+    "start": 22.174,
+    "end": 22.594,
+    "text": "No!",
+    "words": [
+      {
+        "word": "No!",
+        "start": 22.174,
+        "end": 22.594,
+        "score": 0.927
+      }
+    ]
+  },
+  {
+    "start": 23.155,
+    "end": 24.135,
+    "text": "TenZ with four!",
+    "words": [
+      {
+        "word": "TenZ",
+        "start": 23.155,
+        "end": 23.415,
+        "score": 0.571
+      },
+      {
+        "word": "with",
+        "start": 23.435,
+        "end": 23.875,
+        "score": 0.723
+      },
+      {
+        "word": "four!",
+        "start": 23.915,
+        "end": 24.135,
+        "score": 0.432
+      }
+    ]
+  },
+  {
+    "start": 24.555,
+    "end": 25.736,
+    "text": "Second gets the last!",
+    "words": [
+      {
+        "word": "Second",
+        "start": 24.555,
+        "end": 24.936,
+        "score": 0.427
+      },
+      {
+        "word": "gets",
+        "start": 24.976,
+        "end": 25.156,
+        "score": 0.578
+      },
+      {
+        "word": "the",
+        "start": 25.196,
+        "end": 25.336,
+        "score": 0.535
+      },
+      {
+        "word": "last!",
+        "start": 25.416,
+        "end": 25.736,
+        "score": 0.72
+      }
+    ]
+  },
+  {
+    "start": 26.596,
+    "end": 27.817,
+    "text": "OT on the cards!",
+    "words": [
+      {
+        "word": "OT",
+        "start": 26.596,
+        "end": 26.956,
+        "score": 0.841
+      },
+      {
+        "word": "on",
+        "start": 27.097,
+        "end": 27.197,
+        "score": 0.312
+      },
+      {
+        "word": "the",
+        "start": 27.237,
+        "end": 27.317,
+        "score": 0.866
+      },
+      {
+        "word": "cards!",
+        "start": 27.357,
+        "end": 27.817,
+        "score": 0.812
+      }
+    ]
+  },
+  {
+    "start": 28.817,
+    "end": 29.758,
+    "text": " That's the 10s we love.",
+    "words": [
+      {
+        "word": "That's",
+        "start": 28.817,
+        "end": 28.977,
+        "score": 0.56
+      },
+      {
+        "word": "the",
+        "start": 29.017,
+        "end": 29.097,
+        "score": 0.825
+      },
+      {
+        "word": "10s",
+        "start": 29.317,
+        "end": 29.357,
+        "score": 0.873
+      },
+      {
+        "word": "we",
+        "start": 29.377,
+        "end": 29.497,
+        "score": 0.885
+      },
+      {
+        "word": "love.",
+        "start": 29.517,
+        "end": 29.758,
+        "score": 0.928
+      }
+    ]
+  },
+  {
+    "start": 29.958,
+    "end": 30.998,
+    "text": "That's vintage 10s.",
+    "words": [
+      {
+        "word": "That's",
+        "start": 29.958,
+        "end": 30.118,
+        "score": 0.288
+      },
+      {
+        "word": "vintage",
+        "start": 30.298,
+        "end": 30.738,
+        "score": 0.54
+      },
+      {
+        "word": "10s.",
+        "start": 30.758,
+        "end": 30.998,
+        "score": 0.696
+      }
+    ]
+  },
+  {
+    "start": 31.038,
+    "end": 31.879,
+    "text": "What is this?",
+    "words": [
+      {
+        "word": "What",
+        "start": 31.038,
+        "end": 31.179,
+        "score": 0.376
+      },
+      {
+        "word": "is",
+        "start": 31.279,
+        "end": 31.419,
+        "score": 0.678
+      },
+      {
+        "word": "this?",
+        "start": 31.479,
+        "end": 31.879,
+        "score": 0.613
+      }
+    ]
+  },
+  {
+    "start": 33.28,
+    "end": 35.421,
+    "text": "Oh my gosh.",
+    "words": [
+      {
+        "word": "Oh",
+        "start": 33.28,
+        "end": 34.02,
+        "score": 0.488
+      },
+      {
+        "word": "my",
+        "start": 34.121,
+        "end": 34.381,
+        "score": 0.786
+      },
+      {
+        "word": "gosh.",
+        "start": 34.541,
+        "end": 35.421,
+        "score": 0.858
+      }
+    ]
+  },
+  {
+    "start": 36.662,
+    "end": 39.464,
+    "text": "It's like his bullets just have like a magnet on everybody's head.",
+    "words": [
+      {
+        "word": "It's",
+        "start": 36.662,
+        "end": 36.762,
+        "score": 0.874
+      },
+      {
+        "word": "like",
+        "start": 36.782,
+        "end": 36.902,
+        "score": 0.878
+      },
+      {
+        "word": "his",
+        "start": 36.942,
+        "end": 37.042,
+        "score": 0.834
+      },
+      {
+        "word": "bullets",
+        "start": 37.183,
+        "end": 37.503,
+        "score": 0.942
+      },
+      {
+        "word": "just",
+        "start": 37.543,
+        "end": 37.683,
+        "score": 0.313
+      },
+      {
+        "word": "have",
+        "start": 37.703,
+        "end": 37.903,
+        "score": 0.785
+      },
+      {
+        "word": "like",
+        "start": 37.923,
+        "end": 38.063,
+        "score": 0.768
+      },
+      {
+        "word": "a",
+        "start": 38.083,
+        "end": 38.123,
+        "score": 0.493
+      },
+      {
+        "word": "magnet",
+        "start": 38.243,
+        "end": 38.623,
+        "score": 0.88
+      },
+      {
+        "word": "on",
+        "start": 38.684,
+        "end": 38.764,
+        "score": 0.812
+      },
+      {
+        "word": "everybody's",
+        "start": 38.824,
+        "end": 39.204,
+        "score": 0.952
+      },
+      {
+        "word": "head.",
+        "start": 39.244,
+        "end": 39.464,
+        "score": 0.805
+      }
+    ]
+  },
+  {
+    "start": 40.104,
+    "end": 41.045,
+    "text": "And that was to force OT.",
+    "words": [
+      {
+        "word": "And",
+        "start": 40.104,
+        "end": 40.205,
+        "score": 0.815
+      },
+      {
+        "word": "that",
+        "start": 40.225,
+        "end": 40.325,
+        "score": 0.382
+      },
+      {
+        "word": "was",
+        "start": 40.365,
+        "end": 40.505,
+        "score": 0.692
+      },
+      {
+        "word": "to",
+        "start": 40.525,
+        "end": 40.625,
+        "score": 0.888
+      },
+      {
+        "word": "force",
+        "start": 40.645,
+        "end": 40.865,
+        "score": 0.625
+      },
+      {
+        "word": "OT.",
+        "start": 40.945,
+        "end": 41.045,
+        "score": 0.498
+      }
+    ]
+  },
+  {
+    "start": 41.085,
+    "end": 41.345,
+    "text": "Yeah.",
+    "words": [
+      {
+        "word": "Yeah.",
+        "start": 41.085,
+        "end": 41.345,
+        "score": 0.618
+      }
+    ]
+  },
+  {
+    "start": 41.485,
+    "end": 43.146,
+    "text": "I mean, he gets picked there.",
+    "words": [
+      {
+        "word": "I",
+        "start": 41.485,
+        "end": 41.605,
+        "score": 0.731
+      },
+      {
+        "word": "mean,",
+        "start": 41.645,
+        "end": 42.286,
+        "score": 0.729
+      },
+      {
+        "word": "he",
+        "start": 42.326,
+        "end": 42.426,
+        "score": 0.964
+      },
+      {
+        "word": "gets",
+        "start": 42.466,
+        "end": 42.626,
+        "score": 0.694
+      },
+      {
+        "word": "picked",
+        "start": 42.686,
+        "end": 42.926,
+        "score": 0.706
+      },
+      {
+        "word": "there.",
+        "start": 42.946,
+        "end": 43.146,
+        "score": 0.788
+      }
+    ]
+  },
+  {
+    "start": 43.166,
+    "end": 44.407,
+    "text": "Map's probably over.",
+    "words": [
+      {
+        "word": "Map's",
+        "start": 43.166,
+        "end": 43.847,
+        "score": 0.589
+      },
+      {
+        "word": "probably",
+        "start": 43.867,
+        "end": 44.167,
+        "score": 0.562
+      },
+      {
+        "word": "over.",
+        "start": 44.227,
+        "end": 44.407,
+        "score": 0.857
+      }
+    ]
+  },
+  {
+    "start": 46.128,
+    "end": 48.11,
+    "text": "Single-handedly takes out three members.",
+    "words": [
+      {
+        "word": "Single-handedly",
+        "start": 46.128,
+        "end": 46.889,
+        "score": 0.63
+      },
+      {
+        "word": "takes",
+        "start": 46.929,
+        "end": 47.189,
+        "score": 0.81
+      },
+      {
+        "word": "out",
+        "start": 47.289,
+        "end": 47.429,
+        "score": 0.84
+      },
+      {
+        "word": "three",
+        "start": 47.529,
+        "end": 47.75,
+        "score": 0.799
+      },
+      {
+        "word": "members.",
+        "start": 47.81,
+        "end": 48.11,
+        "score": 0.913
+      }
+    ]
+  }
+]
