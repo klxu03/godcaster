@@ -120,3 +120,14 @@ class WhisperX:
         print(diarize_segments)
         print(result["segments"]) # segments are now assigned speaker IDs
         """
+
+import json
+if __name__ == "__main__":
+    YT_URL = "https://www.youtube.com/watch?v=r4qS0WyH2Lk" 
+
+    # populate audio
+    whisper = WhisperX()
+    text = whisper.yt_transcribe(YT_URL)
+
+    with open("transcript.json", "w") as f:
+        json.dump(text, f, indent=2)
