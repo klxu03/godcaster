@@ -8,7 +8,6 @@ class RoundSplitter:
 
         self.sift = cv2.SIFT.create()
         _, self.des1 = self.sift.detectAndCompute(self.template_frame, None)
-        self.kp1 = _
 
         FLANN_INDEX_KDTREE = 1
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
@@ -29,7 +28,8 @@ class RoundSplitter:
         print(f"Len good {len(good)}")
 
         """
-        Want to draw the FLANN matches
+        Want to draw the FLANN matches. based on https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
+        need to introduce a self.kp1 = _ in __init__
 
         # Need to draw only good matches, so create a mask
         matchesMask = [[0,0] for i in range(len(matches))]
