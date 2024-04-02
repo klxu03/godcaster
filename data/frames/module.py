@@ -20,9 +20,10 @@ class RoundSplitter:
         kp2, des2 = self.sift.detectAndCompute(frame, None)
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
+        threshold = 0.15
         good = []
         for m, n in matches:
-            if m.distance < 0.1 * n.distance:
+            if m.distance < threshold * n.distance:
                 good.append(m)
 
         print(f"Len good {len(good)}")
@@ -35,7 +36,7 @@ class RoundSplitter:
 
         # ratio test as per Lowe's paper
         for i,(m,n) in enumerate(matches):
-            if m.distance < 0.7*n.distance:
+            if m.distance < threshold*n.distance:
                 matchesMask[i]=[1,0]
         
         draw_params = dict(matchColor = (0,255,0),
@@ -46,7 +47,6 @@ class RoundSplitter:
         img3 = cv2.drawMatchesKnn(self.template_frame,self.kp1,frame,kp2,matches,None,**draw_params)
         import matplotlib.pyplot as plt
         plt.imshow(img3,),plt.show()
-
         plt.imshow(frame),plt.show()
 
         return len(good)
