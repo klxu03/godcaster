@@ -1,13 +1,5 @@
 import cv2
-import numpy as np
-
-"""
-TODO
-To improve speed/performance of the round detection, we have two options:
-
-- Crop out the video so it's just the 350px x 100px region around the timer so it's faster to process
-- OCR on the image to detect the time length and see if it matches 1:39, if this is faster 
-"""
+from tqdm import tqdm
 
 class RoundSplitter:
     def __init__(self, video_path: str, template_path: str):
@@ -19,24 +11,27 @@ class RoundSplitter:
 
         FLANN_INDEX_KDTREE = 1
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-        search_params = dict(checks=50) # or pass empty dictionary
+        search_params = dict(checks=50) 
 
-        self.flann = cv2.FlannBasedMatcher(index_params,search_params)
+        self.flann = cv2.FlannBasedMatcher(index_params, search_params)
 
-    def detect(self, frame, counter):
-        kp2, des2 = self.sift.detectAndCompute(frame, None)
-        matches = self.flann.knnMatch(self.des1, des2, k=2)
+    def detect(self, frame) -> bool:
+        try:
+            kp2, des2 = self.sift.detectAndCompute(frame, None)
+            matches = self.flann.knnMatch(self.des1, des2, k=2)
+        except Exception as e:
+            print(f"Error at frame: {e}")
+            return False
 
-        threshold = 0.15
+        threshold = 0.10
         good = []
         for m, n in matches:
             if m.distance < threshold * n.distance:
                 good.append(m)
 
-        print(f"Len good {len(good)}")
-
         """
         Want to draw the KNN FLANN matches. based on https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
+        """
 
         if len(good):
             # Need to draw only good matches, so create a mask
@@ -56,32 +51,46 @@ class RoundSplitter:
             import matplotlib.pyplot as plt
             plt.imshow(img3,),plt.show()
             plt.imshow(frame),plt.show()
-        """
 
-        return len(good)
+        return len(good) >= 1
 
     def split(self):
         cam = cv2.VideoCapture(self.video_path)
 
-        counter = 0
-        found = 0
+        frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
+        print(f"Detect reyjkavik {self.detect(frame)}")
 
-        while True:
+        counter = 0
+        next_counter = 0
+        SKIP_FRAMES = 25 # frames to skip after a round is detected
+
+        NUM_FRAMES = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
+        for i in tqdm(range(NUM_FRAMES)):
             ret, frame = cam.read()
+            
+            if counter == 3878:
+                import matplotlib.pyplot as plt
+                plt.imshow(frame),plt.show()
 
             if not ret:
                 break
 
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            found = found + (self.detect(gray, counter) >= 1)
             counter = counter + 1
-            print(f"Frame {counter}, found {found} rounds")
-            # break
+            if counter < next_counter:
+                continue
 
-        print(f"Found {counter} rounds")
+            frame = frame[0:60, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            if counter == 3879:
+                plt.imshow(gray),plt.show()
+
+            if self.detect(gray):
+                next_counter = counter + SKIP_FRAMES
+
         cam.release()
         cv2.destroyAllWindows()
             
 if __name__ == "__main__":
-    splitter = RoundSplitter("cut.mp4", "round_start.png")
+    splitter = RoundSplitter("cut.mp4", "1:39-low.png")
     splitter.split()
