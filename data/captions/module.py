@@ -60,7 +60,6 @@ class Whisper:
         inputs = {"array": inputs, "sampling_rate": self.pipe.feature_extractor.sampling_rate}
 
         res = self.pipe(inputs, batch_size=self.BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)
-        print(f"Captions:\n{res['text']}")
         return res
 
 import whisperx
@@ -96,14 +95,11 @@ class WhisperX:
 
             audio = whisperx.load_audio(audio_filepath)
             result = self.model.transcribe(audio, batch_size=self.BATCH_SIZE)
-            print(f"Before alignment:\n{result['segments']}")
 
             gc.collect(); torch.cuda.empty_cache(); del self.model; # free up memory
 
         model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=self.device)
         result = whisperx.align(result["segments"], model_a, metadata, audio, self.device, return_char_alignments=False)
-
-        print(result["segments"]) # after alignment
 
         gc.collect(); torch.cuda.empty_cache(); del model_a; # free up memory
 
