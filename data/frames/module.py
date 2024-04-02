@@ -15,7 +15,7 @@ class RoundSplitter:
         self.template_frame = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE) 
 
         self.sift = cv2.SIFT.create()
-        _, self.des1 = self.sift.detectAndCompute(self.template_frame, None)
+        self.kp1, self.des1 = self.sift.detectAndCompute(self.template_frame, None)
 
         FLANN_INDEX_KDTREE = 1
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
@@ -36,26 +36,26 @@ class RoundSplitter:
         print(f"Len good {len(good)}")
 
         """
-        Want to draw the FLANN matches. based on https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
-        need to introduce a self.kp1 = _ in __init__
+        Want to draw the KNN FLANN matches. based on https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
 
-        # Need to draw only good matches, so create a mask
-        matchesMask = [[0,0] for i in range(len(matches))]
+        if len(good):
+            # Need to draw only good matches, so create a mask
+            matchesMask = [[0,0] for i in range(len(matches))]
 
-        # ratio test as per Lowe's paper
-        for i,(m,n) in enumerate(matches):
-            if m.distance < threshold*n.distance:
-                matchesMask[i]=[1,0]
-        
-        draw_params = dict(matchColor = (0,255,0),
-        singlePointColor = (255,0,0),
-        matchesMask = matchesMask,
-        flags = cv2.DrawMatchesFlags_DEFAULT)
-        
-        img3 = cv2.drawMatchesKnn(self.template_frame,self.kp1,frame,kp2,matches,None,**draw_params)
-        import matplotlib.pyplot as plt
-        plt.imshow(img3,),plt.show()
-        plt.imshow(frame),plt.show()
+            # ratio test as per Lowe's paper
+            for i,(m,n) in enumerate(matches):
+                if m.distance < threshold*n.distance:
+                    matchesMask[i]=[1,0]
+            
+            draw_params = dict(matchColor = (0,255,0),
+            singlePointColor = (255,0,0),
+            matchesMask = matchesMask,
+            flags = cv2.DrawMatchesFlags_DEFAULT)
+            
+            img3 = cv2.drawMatchesKnn(self.template_frame,self.kp1,frame,kp2,matches,None,**draw_params)
+            import matplotlib.pyplot as plt
+            plt.imshow(img3,),plt.show()
+            plt.imshow(frame),plt.show()
         """
 
         return len(good)
