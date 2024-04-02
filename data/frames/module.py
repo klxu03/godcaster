@@ -28,8 +28,8 @@ class RoundSplitter:
 
         print(f"Len good {len(good)}")
 
-        if (len(good) < 1):
-            return 0
+        """
+        Want to draw the FLANN matches
 
         # Need to draw only good matches, so create a mask
         matchesMask = [[0,0] for i in range(len(matches))]
@@ -48,6 +48,7 @@ class RoundSplitter:
         import matplotlib.pyplot as plt
         plt.imshow(img3,),plt.show()
         plt.imshow(frame),plt.show()
+        """
 
         return len(good)
 
