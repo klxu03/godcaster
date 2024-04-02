@@ -1,6 +1,14 @@
 import cv2
 import numpy as np
 
+"""
+TODO
+To improve speed/performance of the round detection, we have two options:
+
+- Crop out the video so it's just the 350px x 100px region around the timer so it's faster to process
+- OCR on the image to detect the time length and see if it matches 1:39, if this is faster 
+"""
+
 class RoundSplitter:
     def __init__(self, video_path: str, template_path: str):
         self.video_path = video_path
