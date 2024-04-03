@@ -9,19 +9,26 @@ class RoundSplitter:
         self.sift = cv2.SIFT.create()
         self.kp1, self.des1 = self.sift.detectAndCompute(self.template_frame, None)
 
+        if self.des1 is None:
+            raise Exception("Template image is not valid")
+
         FLANN_INDEX_KDTREE = 1
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
         search_params = dict(checks=50) 
 
         self.flann = cv2.FlannBasedMatcher(index_params, search_params)
 
-    def detect(self, frame) -> bool:
-        try:
-            kp2, des2 = self.sift.detectAndCompute(frame, None)
-            matches = self.flann.knnMatch(self.des1, des2, k=2)
-        except Exception as e:
-            print(f"Error at frame: {e}")
+    def detect(self, frame, c) -> bool:
+        kp2, des2 = self.sift.detectAndCompute(frame, None)
+        if len(des2) < 2: # too little features detected
             return False
+
+        print(f"Detecting frame {c} and len {len(des2)}")
+
+        if c == 3884:
+            print(f"Des2: {des2}, len {len(des2)}")
+
+        matches = self.flann.knnMatch(self.des1, des2, k=2)
 
         threshold = 0.10
         good = []
@@ -58,7 +65,7 @@ class RoundSplitter:
         cam = cv2.VideoCapture(self.video_path)
 
         frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
-        print(f"Detect reyjkavik {self.detect(frame)}")
+        print(f"Detect reyjkavik {self.detect(frame, 0)}")
 
         counter = 0
         next_counter = 0
@@ -68,7 +75,7 @@ class RoundSplitter:
         for i in tqdm(range(NUM_FRAMES)):
             ret, frame = cam.read()
             
-            if counter == 3878:
+            if counter == 3878 or counter == 3882:
                 import matplotlib.pyplot as plt
                 plt.imshow(frame),plt.show()
 
@@ -82,10 +89,10 @@ class RoundSplitter:
             frame = frame[0:60, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            if counter == 3879:
+            if counter == 3879 or counter == 3883:
                 plt.imshow(gray),plt.show()
 
-            if self.detect(gray):
+            if self.detect(gray, counter):
                 next_counter = counter + SKIP_FRAMES
 
         cam.release()
