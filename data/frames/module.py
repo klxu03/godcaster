@@ -18,15 +18,10 @@ class RoundSplitter:
 
         self.flann = cv2.FlannBasedMatcher(index_params, search_params)
 
-    def detect(self, frame, c) -> bool:
+    def detect(self, frame) -> bool:
         kp2, des2 = self.sift.detectAndCompute(frame, None)
-        if len(des2) < 2: # too little features detected
+        if des2 is None or len(des2) < 2: # too little features detected
             return False
-
-        print(f"Detecting frame {c} and len {len(des2)}")
-
-        if c == 3884:
-            print(f"Des2: {des2}, len {len(des2)}")
 
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
@@ -65,7 +60,7 @@ class RoundSplitter:
         cam = cv2.VideoCapture(self.video_path)
 
         frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
-        print(f"Detect reyjkavik {self.detect(frame, 0)}")
+        print(f"Detect reyjkavik {self.detect(frame)}")
 
         counter = 0
         next_counter = 0
@@ -74,10 +69,6 @@ class RoundSplitter:
         NUM_FRAMES = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
         for i in tqdm(range(NUM_FRAMES)):
             ret, frame = cam.read()
-            
-            if counter == 3878 or counter == 3882:
-                import matplotlib.pyplot as plt
-                plt.imshow(frame),plt.show()
 
             if not ret:
                 break
@@ -89,10 +80,7 @@ class RoundSplitter:
             frame = frame[0:60, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            if counter == 3879 or counter == 3883:
-                plt.imshow(gray),plt.show()
-
-            if self.detect(gray, counter):
+            if self.detect(gray):
                 next_counter = counter + SKIP_FRAMES
 
         cam.release()
