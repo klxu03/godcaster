@@ -2,7 +2,6 @@ import torch
 import tempfile
 import os
 import whisperx
-import gc
 import subprocess
 
 class WhisperX:
@@ -30,11 +29,7 @@ class WhisperX:
             audio = whisperx.load_audio(audio_filepath)
             result = self.model.transcribe(audio, batch_size=self.BATCH_SIZE)
 
-            gc.collect(); torch.cuda.empty_cache(); del self.model; # free up memory
-
         model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=self.device)
         result = whisperx.align(result["segments"], model_a, metadata, audio, self.device, return_char_alignments=False)
-
-        gc.collect(); torch.cuda.empty_cache(); del model_a; # free up memory
 
         return result["segments"]
