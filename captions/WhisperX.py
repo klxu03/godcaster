@@ -3,6 +3,7 @@ import tempfile
 import os
 import whisperx
 import subprocess
+import ffmpeg
 
 class WhisperX:
     def __init__(self, model_name="large-v3", compute_type="float16", batch_size = 16):
@@ -14,13 +15,7 @@ class WhisperX:
     def convert_mp4_to_mp3(self, video_filepath: str, audio_filepath: str, ar=44100, ac=2, b_a="192k"):
         if not os.path.exists(video_filepath):
             raise FileNotFoundError(f"File not found: {video_filepath}")
-
-        command = f"ffmpeg -i {video_filepath} -vn -ar {ar} -ac {ac} -b:a {b_a} {audio_filepath}"
-        try:
-            subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-        except subprocess.CalledProcessError as e:
-            print(f"An error occurred while converting {video_filepath} to {audio_filepath}")
-            print(f"Error message: {e.output.decode()}")
+        ffmpeg.input(video_filepath).audio.output(audio_filepath, **{'b:a': b_a,'ar':ar, 'ac':ac}).run(quiet=True)
 
     def video_transcribe(self, video_filepath: str):
         with tempfile.TemporaryDirectory() as tmpdirname:
