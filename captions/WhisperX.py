@@ -9,6 +9,7 @@ class WhisperX:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.BATCH_SIZE = batch_size
         self.model = whisperx.load_model(model_name, self.device, compute_type=compute_type)
+        self.model_align, self.metadata = whisperx.load_align_model(language_code="en", device=self.device)
 
     def convert_mp4_to_mp3(self, video_filepath: str, audio_filepath: str, ar=44100, ac=2, b_a="192k"):
         if not os.path.exists(video_filepath):
@@ -28,8 +29,6 @@ class WhisperX:
 
             audio = whisperx.load_audio(audio_filepath)
             result = self.model.transcribe(audio, batch_size=self.BATCH_SIZE)
-
-        model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=self.device)
-        result = whisperx.align(result["segments"], model_a, metadata, audio, self.device, return_char_alignments=False)
+        result = whisperx.align(result["segments"], self.model_align, self.metadata, audio, self.device, return_char_alignments=False)
 
         return result["segments"]
