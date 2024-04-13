@@ -18,6 +18,7 @@ faster-whisper = "^1.0.1"
 setuptools = "^69.2.0"
 pyannote-audio = "^3.1.1"
 opencv-python = "^4.9.0.80"
+ffmpeg-python = "^0.2.0"
 
 
 [build-system]
