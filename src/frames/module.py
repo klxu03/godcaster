@@ -1,9 +1,10 @@
 import cv2
 from tqdm import tqdm
+import easyocr
+import math
 
 class RoundSplitter:
-    def __init__(self, video_path: str, template_path: str):
-        self.video_path = video_path
+    def __init__(self, template_path: str):
         self.template_frame = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE) 
 
         self.sift = cv2.SIFT.create()
@@ -17,6 +18,8 @@ class RoundSplitter:
         search_params = dict(checks=50) 
 
         self.flann = cv2.FlannBasedMatcher(index_params, search_params)
+
+        self.reader = easyocr.Reader(['en'])
 
     def detect(self, frame) -> bool:
         kp2, des2 = self.sift.detectAndCompute(frame, None)
@@ -35,6 +38,7 @@ class RoundSplitter:
         Want to draw the KNN FLANN matches. based on https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
         """
 
+        """
         if len(good):
             # Need to draw only good matches, so create a mask
             matchesMask = [[0,0] for i in range(len(matches))]
@@ -53,39 +57,57 @@ class RoundSplitter:
             import matplotlib.pyplot as plt
             plt.imshow(img3,),plt.show()
             plt.imshow(frame),plt.show()
+        """
 
-        return len(good) >= 1
+        if len(good) == 0:
+            return False
 
-    def split(self):
-        cam = cv2.VideoCapture(self.video_path)
+        res = self.reader.readtext(frame)[-1][1]
+        print("EasyOCR", res)
 
-        frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
-        print(f"Detect reyjkavik {self.detect(frame)}")
+        return set("139") <= set(res)
+
+
+    def split(self, video_path: str):
+        vid = cv2.VideoCapture(video_path)
 
         counter = 0
         next_counter = 0
-        SKIP_FRAMES = 25 # frames to skip after a round is detected
+        FPS = vid.get(cv2.CAP_PROP_FPS) # frames to skip after a round is detected
+        print("FPS", FPS)
 
-        NUM_FRAMES = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
-        for i in tqdm(range(NUM_FRAMES)):
-            ret, frame = cam.read()
-
-            if not ret:
-                break
-
+        NUM_FRAMES = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        num_rounds = 0
+        for i in tqdm(range(math.ceil(NUM_FRAMES/FPS) + 120)):
             counter = counter + 1
             if counter < next_counter:
                 continue
+            vid.set(cv2.CAP_PROP_POS_FRAMES, int(counter * FPS))
 
-            frame = frame[0:60, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
+            ret, frame = vid.read()
+            if not ret:
+                break
+
+            frame = frame[0:80, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(gray, cv2.COLOR_BGR2RGB)
 
             if self.detect(gray):
-                next_counter = counter + SKIP_FRAMES
+                num_rounds += 1
+                print(f"Round detected {num_rounds}")
+                next_counter = counter + 5 # skip at least 15 seconds
 
-        cam.release()
+        vid.release()
         cv2.destroyAllWindows()
+
+    def test_reykjavik(self):
+        frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = frame[0:80, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
+        print(f"Detect reyjkavik {self.detect(frame)}")
+        
             
 if __name__ == "__main__":
-    splitter = RoundSplitter("cut.mp4", "1:39-low.png")
-    splitter.split()
+    splitter = RoundSplitter("1_39.jpg")
+    # splitter.test_reykjavik()
+    splitter.split("sample.mkv")
