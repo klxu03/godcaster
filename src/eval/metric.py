@@ -1,11 +1,13 @@
-from abc import ABC
-
 from typing import List
 
-class Metric(ABC):
+from aac_metrics import evaluate
+
+class Metric:
 
     def __init__(self) -> None:
         super().__init__()
     
     def score(self, predictions: List[str], ground_truth: List[str]) -> List[float]:
-        pass
+        corpus_scores, _ = evaluate(predictions, ground_truth)
+
+        return corpus_scores
