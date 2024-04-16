@@ -21,7 +21,10 @@ class RoundSplitter:
 
         self.reader = easyocr.Reader(['en'])
 
-    def detect(self, frame) -> bool:
+    """
+    Returns 0 if round not detected, 1 if 1:39 detected, 2 if 1:38 detected
+    """
+    def detect(self, frame) -> int:
         kp2, des2 = self.sift.detectAndCompute(frame, None)
         if des2 is None or len(des2) < 2: # too little features detected
             return False
@@ -60,10 +63,13 @@ class RoundSplitter:
         """
 
         if len(good) == 0:
-            return False
+            return 0
 
         res = self.reader.readtext(frame)[-1][1]
         print("EasyOCR", res)
+
+        if set("138") <= set(res):
+            return 2
 
         return set("139") <= set(res)
 
@@ -95,10 +101,12 @@ class RoundSplitter:
             if self.detect(gray):
                 num_rounds += 1
                 print(f"Round detected {num_rounds}")
-                next_counter = counter + 5 # skip at least 15 seconds
+                next_counter = counter + 15 # skip at least 15 seconds
 
         vid.release()
         cv2.destroyAllWindows()
+
+        print("Final number of rounds", num_rounds)
 
     def test_reykjavik(self):
         frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
@@ -106,7 +114,6 @@ class RoundSplitter:
         frame = frame[0:80, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
         print(f"Detect reyjkavik {self.detect(frame)}")
         
-            
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg")
     # splitter.test_reykjavik()
