@@ -2,6 +2,7 @@ import cv2
 from tqdm import tqdm
 import easyocr
 import math
+import PIL
 
 class RoundSplitter:
     def __init__(self, template_path: str):
@@ -31,7 +32,7 @@ class RoundSplitter:
 
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
-        threshold = 0.10
+        threshold = 0.15
         good = []
         for m, n in matches:
             if m.distance < threshold * n.distance:
@@ -64,6 +65,8 @@ class RoundSplitter:
 
         if len(good) == 0:
             return 0
+        
+        # cv2.imwrite("frame.jpg", frame)
 
         res = self.reader.readtext(frame)[-1][1]
         print("EasyOCR", res)
@@ -117,4 +120,4 @@ class RoundSplitter:
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg")
     # splitter.test_reykjavik()
-    splitter.split("sample.mkv")
+    splitter.split("sample2.webm")
