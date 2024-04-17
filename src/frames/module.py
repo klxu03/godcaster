@@ -116,16 +116,22 @@ class RoundSplitter:
 
         vid.release()
         cv2.destroyAllWindows()
+        round_starts.append(NUM_FRAMES // FPS)
 
         dir = video_path.split(".")[0]
         os.makedirs(dir, exist_ok=True)
         file_format = video_path.split(".")[-1]
+        CLIP_MAX_LENGTH = 5 * 60 # 5 mins
 
         for i in range(num_rounds - 1):
             start = round_starts[i] 
             end = round_starts[i + 1]
+
+            if end - start > CLIP_MAX_LENGTH:
+                continue
+
             ffmpeg_extract_subclip(video_path, start, end, targetname=f"{dir}/round_{i}.{file_format}")
 
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg")
-    splitter.split("sample.mkv")
+    splitter.split("sample2.webm")
