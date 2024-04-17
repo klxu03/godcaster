@@ -25,6 +25,9 @@ class RoundSplitter:
 
     """
     Returns 0 if round not detected, 1 if 1:39 detected, 2 if 1:38 detected
+
+    Does an initial KNN FLANN match pass, which has about 20 fps throughput and then if it passes the threshold of existing 1:39 template matching
+    Go ahead and do OCR on the frame to check if it is 1:39 or 1:38 (sometimes might just skip 1:39, but will catch 1:38, chance of failing twice is lesser)
     """
     def detect(self, frame) -> int:
         kp2, des2 = self.sift.detectAndCompute(frame, None)
@@ -59,6 +62,7 @@ class RoundSplitter:
             flags = cv2.DrawMatchesFlags_DEFAULT)
             
             img3 = cv2.drawMatchesKnn(self.template_frame,self.kp1,frame,kp2,matches,None,**draw_params)
+            cv2.imshow(img3)
             import matplotlib.pyplot as plt
             plt.imshow(img3,),plt.show()
             plt.imshow(frame),plt.show()
@@ -81,7 +85,7 @@ class RoundSplitter:
     def split(self, video_path: str):
         vid = cv2.VideoCapture(video_path)
 
-        counter = 1708
+        counter = 0
         next_counter = 0
         FPS = vid.get(cv2.CAP_PROP_FPS) # frames to skip after a round is detected
         print("FPS", FPS)
@@ -90,8 +94,7 @@ class RoundSplitter:
 
         NUM_FRAMES = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         num_rounds = 0
-        # for i in tqdm(range(math.ceil(NUM_FRAMES/FPS) + 120)):
-        for i in tqdm(range(600)):
+        for i in tqdm(range(math.ceil(NUM_FRAMES/FPS) + 120)):
             counter = counter + 1
             if counter < next_counter:
                 continue
@@ -116,20 +119,13 @@ class RoundSplitter:
 
         dir = video_path.split(".")[0]
         os.makedirs(dir, exist_ok=True)
+        file_format = video_path.split(".")[-1]
 
         for i in range(num_rounds - 1):
             start = round_starts[i] 
             end = round_starts[i + 1]
-            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{dir}/round_{i}.mp4")
+            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{dir}/round_{i}.{file_format}")
 
-
-    def test_reykjavik(self):
-        frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = frame[0:80, int(frame.shape[1]/2) - 100:int(frame.shape[1]/2) + 100]
-        print(f"Detect reyjkavik {self.detect(frame)}")
-        
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg")
-    # splitter.test_reykjavik()
     splitter.split("sample.mkv")
