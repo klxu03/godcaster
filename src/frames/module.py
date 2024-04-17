@@ -2,7 +2,8 @@ import cv2
 from tqdm import tqdm
 import easyocr
 import math
-import PIL
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+import os
 
 class RoundSplitter:
     def __init__(self, template_path: str):
@@ -32,7 +33,7 @@ class RoundSplitter:
 
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
-        threshold = 0.15
+        threshold = 0.20
         good = []
         for m, n in matches:
             if m.distance < threshold * n.distance:
@@ -80,14 +81,17 @@ class RoundSplitter:
     def split(self, video_path: str):
         vid = cv2.VideoCapture(video_path)
 
-        counter = 0
+        counter = 1708
         next_counter = 0
         FPS = vid.get(cv2.CAP_PROP_FPS) # frames to skip after a round is detected
         print("FPS", FPS)
 
+        round_starts = []
+
         NUM_FRAMES = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         num_rounds = 0
-        for i in tqdm(range(math.ceil(NUM_FRAMES/FPS) + 120)):
+        # for i in tqdm(range(math.ceil(NUM_FRAMES/FPS) + 120)):
+        for i in tqdm(range(600)):
             counter = counter + 1
             if counter < next_counter:
                 continue
@@ -105,11 +109,19 @@ class RoundSplitter:
                 num_rounds += 1
                 print(f"Round detected {num_rounds}")
                 next_counter = counter + 15 # skip at least 15 seconds
+                round_starts.append(counter)
 
         vid.release()
         cv2.destroyAllWindows()
 
-        print("Final number of rounds", num_rounds)
+        dir = video_path.split(".")[0]
+        os.makedirs(dir, exist_ok=True)
+
+        for i in range(num_rounds - 1):
+            start = round_starts[i] 
+            end = round_starts[i + 1]
+            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{dir}/round_{i}.mp4")
+
 
     def test_reykjavik(self):
         frame = cv2.imread('reykjavik.png', cv2.IMREAD_GRAYSCALE)
@@ -120,4 +132,4 @@ class RoundSplitter:
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg")
     # splitter.test_reykjavik()
-    splitter.split("sample2.webm")
+    splitter.split("sample.mkv")
