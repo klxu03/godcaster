@@ -1,4 +1,4 @@
-from .module import RoundSplitter
+from . import RoundSplitter
 import os
 
 if __name__ == "__main__":
