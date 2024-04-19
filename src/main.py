@@ -7,4 +7,5 @@ def main():
     print(dir_list)
     print(dir_list[0])
 
-main()
+if __name__ == "__main__":
+    main()
