@@ -1,4 +1,4 @@
-from frames.module import RoundSplitter
+from .module import RoundSplitter
 import os
 
 if __name__ == "__main__":
