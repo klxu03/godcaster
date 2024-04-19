@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=llama2_runs
-#SBATCH --output=out.llama2_runs.log
-#SBATCH --error=err.llama2_runs.log
+#SBATCH --job-name=godcaster_splits
+#SBATCH --output=out.godcaster_splits.log
+#SBATCH --error=err.godcaster_splits.log
 #
 # Number of tasks needed for this job. Generally, used with MPI jobs
 #SBATCH --ntasks=1
@@ -29,4 +29,4 @@
 cd godcaster
 poetry shell
 
-python src/frames/frames.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
+python src/main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
