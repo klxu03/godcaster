@@ -22,8 +22,11 @@
 # Send mail to the email address when the job fails
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=kxu39@jhu.edu
+#
+# Create a job array
+#SBATCH --array=1-9
 
 cd godcaster
 poetry shell
 
-python src/frames/frames.py 
+python src/frames/frames.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
