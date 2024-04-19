@@ -1,4 +1,4 @@
-from .module import RoundSplitter
+from frames.module import RoundSplitter
 import os
 
 def main():
