@@ -1,11 +1,13 @@
 from frames.module import RoundSplitter
-import os
+from frames.load_balancer import load_balance
+import sys
 
 def main():
+    index = sys.argv[1]
+    total = sys.argv[2]
+    videos_to_split = load_balance(total, index)
+
     splitter = RoundSplitter("1_39.jpg")
-    dir_list = os.listdir("/scratch/kxu39")
-    print(dir_list)
-    print(dir_list[0])
 
 if __name__ == "__main__":
     main()
