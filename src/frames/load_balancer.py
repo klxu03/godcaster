@@ -2,14 +2,17 @@ import os
 from moviepy.editor import VideoFileClip
 
 def load_balance(total, ind):
-    vid_list = os.listdir("/scratch/kxu39")
-    print(vid_list)
+    dir_path = "data/"
+    vid_list = os.listdir(dir_path)
 
     vid_with_len = []
 
     sum = 0
-    for i in range(vid_list):
-        vid_list[i] = "/scratch/kxu39/" + vid_list[i]
+    for i in range(len(vid_list)):
+        if vid_list[i] == ".gitkeep":
+            continue
+
+        vid_list[i] = dir_path + vid_list[i]
         dur = VideoFileClip(vid_list[i]).duration
         sum += dur
         vid_with_len.append((vid_list[i], dur))
@@ -17,7 +20,7 @@ def load_balance(total, ind):
 
     vid_with_len.sort(key=lambda x: x[1], reverse=True)
     
-    indexes = [None] * total
+    indexes = [[]]
     curr_ind = 0
     curr_sum = 0
 
@@ -26,5 +29,6 @@ def load_balance(total, ind):
         if curr_sum + dur > threshold:
             curr_sum = 0
             curr_ind += 1
+            indexes.append([])
 
     return indexes[ind]

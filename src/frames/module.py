@@ -6,8 +6,9 @@ from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import os
 
 class RoundSplitter:
-    def __init__(self, template_path: str):
+    def __init__(self, template_path: str, output_dir: str):
         self.template_frame = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE) 
+        self.output_dir = output_dir
 
         self.sift = cv2.SIFT.create()
         self.kp1, self.des1 = self.sift.detectAndCompute(self.template_frame, None)
@@ -130,8 +131,8 @@ class RoundSplitter:
             if end - start > CLIP_MAX_LENGTH:
                 continue
 
-            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{dir}/round_{i}.{file_format}")
+            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{self.output_dir}/{dir}/round_{i}.{file_format}")
 
 if __name__ == "__main__":
-    splitter = RoundSplitter("1_39.jpg")
+    splitter = RoundSplitter("1_39.jpg", ".")
     splitter.split("sample2.webm")

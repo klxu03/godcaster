@@ -1,3 +1,3 @@
 *.pyc
-/src/frames/sample.mkv
-/src/frames/sample2.webm
+/src/data/sample.mkv
+/src/data/sample2.webm
