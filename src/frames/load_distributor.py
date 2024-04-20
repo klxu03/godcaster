@@ -37,4 +37,5 @@ def load_distribute(total, ind):
     while len(indexes) < total:
         indexes.append([])
 
+    print("indexes len", len(indexes), "ind", ind)
     return indexes[ind]
