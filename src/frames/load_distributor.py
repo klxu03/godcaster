@@ -34,4 +34,7 @@ def load_distribute(total, ind):
             curr_ind += 1
             indexes.append([])
 
+    while len(indexes) < total:
+        indexes.append([])
+
     return indexes[ind]
