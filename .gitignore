@@ -1,3 +1,4 @@
 *.pyc
 /src/data/sample.mkv
 /src/data/sample2.webm
+*/.DSTORE

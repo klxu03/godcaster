@@ -1,5 +1,5 @@
-from frames.module import RoundSplitter
-from frames.load_balancer import load_balance
+from module import RoundSplitter
+from load_balancer import load_balance
 import sys
 
 def main():
@@ -7,7 +7,7 @@ def main():
     total = int(sys.argv[2])
     videos_to_split = load_balance(total, index)
 
-    splitter = RoundSplitter("frames/1_39.jpg", "data")
+    splitter = RoundSplitter("1_39.jpg", "/scratch/kxu39/merged_old/subsample")
     
     for video in videos_to_split:
         splitter.split(video)
