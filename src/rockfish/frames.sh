@@ -14,7 +14,6 @@
 # Minimum memory required per allocated  CPU  in  MegaBytes.
 #SBATCH --mem-per-cpu=48000
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:1
 #SBATCH -A ia1
 #SBATCH --partition debug
 #SBATCH --qos=normal
