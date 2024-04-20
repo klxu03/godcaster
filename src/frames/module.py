@@ -131,7 +131,7 @@ class RoundSplitter:
             if end - start > CLIP_MAX_LENGTH:
                 continue
 
-            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{self.output_dir}/{dir}/round_{i}.{file_format}")
+            ffmpeg_extract_subclip(video_path, start, end, targetname=f"{self.output_dir}{dir}/round_{i}.{file_format}")
 
 if __name__ == "__main__":
     splitter = RoundSplitter("1_39.jpg", ".")

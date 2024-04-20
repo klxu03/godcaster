@@ -7,7 +7,7 @@ def main():
     total = int(sys.argv[2])
     videos_to_split = load_distribute(total, index)
 
-    splitter = RoundSplitter("1_39.jpg", "/scratch/kxu39/merged_old/subsample")
+    splitter = RoundSplitter("1_39.jpg", "/scratch/kxu39/merged_old/subsample/")
     
     for video in videos_to_split:
         splitter.split(video)
