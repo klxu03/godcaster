@@ -1,7 +1,7 @@
 import os
 from moviepy.editor import VideoFileClip
 
-def load_distribute(total, ind):
+def load_distribute(max_index, ind):
     dir_path = "/scratch/kxu39/merged_old/subsample/"
     vid_list = os.listdir(dir_path)
 
@@ -19,7 +19,7 @@ def load_distribute(total, ind):
             sum += dur
 
         vid_with_len.append((vid_list[i], dur))
-    threshold = sum / total
+    threshold = sum / (max_index + 1)
 
     vid_with_len.sort(key=lambda x: x[1], reverse=True)
     
@@ -34,8 +34,7 @@ def load_distribute(total, ind):
             curr_ind += 1
             indexes.append([])
 
-    while len(indexes) < total:
+    while len(indexes) <= max_index:
         indexes.append([])
 
-    print("indexes len", len(indexes), "ind", ind, "total", total)
     return indexes[ind]

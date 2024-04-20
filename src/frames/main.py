@@ -4,8 +4,8 @@ import sys
 
 def main():
     index = int(sys.argv[1]) # 0-indexed
-    total = int(sys.argv[2])
-    videos_to_split = load_distribute(total, index)
+    max_index = int(sys.argv[2])
+    videos_to_split = load_distribute(max_index, index)
 
     splitter = RoundSplitter("1_39.jpg", "/scratch/kxu39/merged_old/subsample/")
     
