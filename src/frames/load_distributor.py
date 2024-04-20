@@ -1,8 +1,8 @@
 import os
 from moviepy.editor import VideoFileClip
 
-def load_balance(total, ind):
-    dir_path = "data/"
+def load_distribute(total, ind):
+    dir_path = "/scratch/kxu39/merged_old/subsample/"
     vid_list = os.listdir(dir_path)
 
     vid_with_len = []
@@ -13,8 +13,11 @@ def load_balance(total, ind):
             continue
 
         vid_list[i] = dir_path + vid_list[i]
-        dur = VideoFileClip(vid_list[i]).duration
-        sum += dur
+        print(vid_list[i])
+        with VideoFileClip(vid_list[i]) as temp_vid:
+            dur = temp_vid.duration
+            sum += dur
+
         vid_with_len.append((vid_list[i], dur))
     threshold = sum / total
 
