@@ -24,7 +24,7 @@
 #SBATCH --mail-user=kxu39@jhu.edu
 #
 # Create a job array
-#SBATCH --array=1-9
+#SBATCH --array=0-8
 
 cd godcaster
 
