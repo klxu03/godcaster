@@ -27,6 +27,5 @@
 #SBATCH --array=1-9
 
 cd godcaster
-poetry shell
 
-python src/frames/main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
+poetry run python src/frames/main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
