@@ -124,6 +124,7 @@ class RoundSplitter:
         file_format = video_path.split(".")[-1]
         CLIP_MAX_LENGTH = 5 * 60 # 5 mins
 
+        print("Round starts", round_starts)
         for i in range(num_rounds - 1):
             start = round_starts[i] 
             end = round_starts[i + 1]

@@ -9,6 +9,7 @@ def main():
 
     splitter = RoundSplitter("1_39.jpg", "/scratch/kxu39/merged_old/subsample/")
     
+    print("videos_to_split", videos_to_split)
     for video in videos_to_split:
         splitter.split(video)
 
