@@ -29,4 +29,4 @@
 cd godcaster
 poetry shell
 
-python src/main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
+python src/frames/main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
