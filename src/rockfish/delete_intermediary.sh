@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=godcaster_merge
-#SBATCH --output=out.godcaster_merge.log
-#SBATCH --error=err.godcaster_merge.log
+#SBATCH --job-name=godcaster_del
+#SBATCH --output=out.godcaster_del.log
+#SBATCH --error=err.godcaster_del.log
 #
 # Number of tasks needed for this job. Generally, used with MPI jobs
 #SBATCH --ntasks=1
