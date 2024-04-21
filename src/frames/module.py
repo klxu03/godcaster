@@ -37,7 +37,7 @@ class RoundSplitter:
 
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
-        threshold = 0.23
+        threshold = 0.175
         good = []
         for m, n in matches:
             if m.distance < threshold * n.distance:
