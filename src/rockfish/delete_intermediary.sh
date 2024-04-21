@@ -23,7 +23,7 @@
 #SBATCH --mail-user=kxu39@jhu.edu
 
 # Deletes all .m4a files in the current directory
-find . -maxdepth 0 -type f -name "*.m4a" -delete
+find . -maxdepth 1 -type f -name "*.m4a" -delete
 
 # Deletes all .mp4 files in the current directory
-find . -maxdepth 0 -type f -name "*.mp4" -delete
+find . -maxdepth 1 -type f -name "*.mp4" -delete
