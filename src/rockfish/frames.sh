@@ -9,7 +9,7 @@
 #SBATCH --partition=parallel
 #
 # Time format = HH:MM:SS, DD-HH:MM:SS
-#SBATCH --time=72:00:00
+#SBATCH --time=144:00:00
 #
 # Minimum memory required per allocated  CPU  in  MegaBytes.
 #SBATCH --mem-per-cpu=48000
@@ -23,7 +23,7 @@
 #SBATCH --mail-user=kxu39@jhu.edu
 #
 # Create a job array
-#SBATCH --array=0-8
+#SBATCH --array=0-35
 
 cd godcaster
 

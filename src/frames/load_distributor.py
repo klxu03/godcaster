@@ -2,7 +2,7 @@ import os
 from moviepy.editor import VideoFileClip
 
 def load_distribute(max_index, ind):
-    dir_path = "/scratch/kxu39/merged_old/subsample/"
+    dir_path = "/scratch/kxu39/merged/"
     vid_list = os.listdir(dir_path)
 
     vid_with_len = []
