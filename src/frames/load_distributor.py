@@ -29,7 +29,8 @@ def load_distribute(max_index, ind):
 
     for i, (vid, dur) in enumerate(vid_with_len):
         indexes[curr_ind].append(vid)
-        if curr_sum + dur > threshold:
+        curr_sum += dur
+        if curr_sum > threshold:
             curr_sum = 0
             curr_ind += 1
             indexes.append([])
