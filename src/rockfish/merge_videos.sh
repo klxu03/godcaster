@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=godcaster_splits
-#SBATCH --output=out.godcaster_splits.log
-#SBATCH --error=err.godcaster_splits.log
+#SBATCH --job-name=godcaster_merge
+#SBATCH --output=out.godcaster_merge.log
+#SBATCH --error=err.godcaster_merge.log
 #
 # Number of tasks needed for this job. Generally, used with MPI jobs
 #SBATCH --ntasks=1
@@ -14,7 +14,6 @@
 # Minimum memory required per allocated  CPU  in  MegaBytes.
 #SBATCH --mem-per-cpu=48000
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:1
 #SBATCH -A ia1
 #SBATCH --partition debug
 #SBATCH --qos=normal
