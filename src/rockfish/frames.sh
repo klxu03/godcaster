@@ -23,7 +23,7 @@
 #SBATCH --mail-user=kxu39@jhu.edu
 #
 # Create a job array
-#SBATCH --array=0-71
+#SBATCH --array=0-119
 
 cd godcaster
 cd src/frames
