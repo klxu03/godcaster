@@ -37,7 +37,7 @@ class RoundSplitter:
 
         matches = self.flann.knnMatch(self.des1, des2, k=2)
 
-        threshold = 0.20
+        threshold = 0.23
         good = []
         for m, n in matches:
             if m.distance < threshold * n.distance:
@@ -75,7 +75,7 @@ class RoundSplitter:
         # cv2.imwrite("frame.jpg", frame)
 
         res = self.reader.readtext(frame)[-1][1]
-        print("EasyOCR", res)
+        # print("EasyOCR", res)
 
         if set("138") <= set(res):
             return 2
@@ -89,7 +89,7 @@ class RoundSplitter:
         counter = 0
         next_counter = 0
         FPS = vid.get(cv2.CAP_PROP_FPS) # frames to skip after a round is detected
-        print("FPS", FPS)
+        # print("FPS", FPS)
 
         round_starts = []
 
@@ -111,7 +111,7 @@ class RoundSplitter:
 
             if self.detect(gray):
                 num_rounds += 1
-                print(f"Round detected {num_rounds}")
+                # print(f"Round detected {num_rounds}")
                 next_counter = counter + 15 # skip at least 15 seconds
                 round_starts.append(counter)
 
@@ -124,7 +124,8 @@ class RoundSplitter:
         file_format = video_path.split(".")[-1]
         CLIP_MAX_LENGTH = 5 * 60 # 5 mins
 
-        print("Round starts", round_starts)
+        # print("Round starts", round_starts)
+        print(f"For {video_path}, detected {num_rounds} rounds")
         for i in range(num_rounds - 1):
             start = round_starts[i] 
             end = round_starts[i + 1]

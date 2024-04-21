@@ -13,7 +13,7 @@ def load_distribute(max_index, ind):
             continue
 
         vid_list[i] = dir_path + vid_list[i]
-        print("vid_list", vid_list[i])
+        # print("vid_list", vid_list[i])
         with VideoFileClip(vid_list[i]) as temp_vid:
             dur = temp_vid.duration
             sum += dur
@@ -37,6 +37,6 @@ def load_distribute(max_index, ind):
     while len(indexes) <= max_index:
         indexes.append([])
 
-    print("indexes", indexes)
+    # print("indexes", indexes)
 
     return indexes[ind]
