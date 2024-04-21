@@ -1,5 +1,6 @@
 import os
 from moviepy.editor import VideoFileClip
+import math
 
 def load_distribute(max_index, ind):
     dir_path = "/scratch/kxu39/merged/"
@@ -19,7 +20,7 @@ def load_distribute(max_index, ind):
             sum += dur
 
         vid_with_len.append((vid_list[i], dur))
-    threshold = sum / (max_index + 1)
+        threshold = math.ceil(sum / float(max_index + 1))
 
     vid_with_len.sort(key=lambda x: x[1], reverse=True)
     
