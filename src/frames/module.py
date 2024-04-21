@@ -109,11 +109,14 @@ class RoundSplitter:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.cvtColor(gray, cv2.COLOR_BGR2RGB)
 
-            if self.detect(gray):
-                num_rounds += 1
-                # print(f"Round detected {num_rounds}")
-                next_counter = counter + 15 # skip at least 15 seconds
-                round_starts.append(counter)
+            try:
+                if self.detect(gray):
+                    num_rounds += 1
+                    # print(f"Round detected {num_rounds}")
+                    next_counter = counter + 15 # skip at least 15 seconds
+                    round_starts.append(counter)
+            except Exception as e:
+                print(f"Error in detecting round {e}")
 
         vid.release()
         cv2.destroyAllWindows()
