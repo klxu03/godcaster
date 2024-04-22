@@ -43,7 +43,7 @@ def load_distribute(max_index, ind):
             indexes[-1].append(vid_with_len[min_ind][0])
             vid_list.pop(min_ind)
 
-            if len(indexes < max_index):
+            if len(indexes) < max_index:
                 indexes.append([])
         else:
             curr_sum += dur
