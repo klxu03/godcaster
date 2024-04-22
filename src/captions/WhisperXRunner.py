@@ -1,4 +1,4 @@
-from . import WhisperX
+from WhisperX import WhisperX
 import json
 import os
 

@@ -28,4 +28,5 @@
 cd godcaster
 cd src/frames
 
+# Go ahead and run the video splitting script to split a video by their round and properly store the clips
 poetry run python main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX

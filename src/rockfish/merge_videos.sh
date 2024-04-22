@@ -22,6 +22,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=kxu39@jhu.edu
 
+# Merge videos and audio files of mp4 in the current directory and store them in merge
+
 # Directory where merged files will be stored
 mkdir -p merged
 
