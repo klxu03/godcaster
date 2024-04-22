@@ -6,9 +6,12 @@ import torch
 
 import torch.nn as nn
 
-from godcaster_encoder import GodCasterEncoder
+from transformers import VivitImageProcessor, VivitModel, LongformerModel
 
-class TransformerNetModel2(nn.Module):
+from godcaster_encoder import GodCasterEncoder
+from trainer.godcaster_trainer import GodCasterConfig
+
+class GodCaster(nn.Module):
     """
     The full UNet model with attention and timestep embedding.
 
@@ -33,70 +36,61 @@ class TransformerNetModel2(nn.Module):
 
     def __init__(
         self,
-        in_channels,
-        model_channels,
-        out_channels,
-        num_res_blocks,
-        attention_resolutions,
-        dropout=0,
-        channel_mult=(1, 2, 4, 8),
-        conv_resample=True,
-        dims=2,
-        num_classes=None,
-        use_checkpoint=False,
-        num_heads=1,
-        num_heads_upsample=-1,
-        config=None,
-        vocab_size=None,
-        logits_mode=1,
+        config: GodCasterConfig
     ):
         super().__init__()
 
-        if num_heads_upsample == -1:
-            num_heads_upsample = num_heads
+        if config.num_heads_upsample == -1:
+            num_heads_upsample = config.num_heads
 
-        config.hidden_dropout_prob = dropout
+        config.hidden_dropout_prob = config.dropout
 
-        self.in_channels = in_channels
-        self.model_channels = model_channels
-        self.out_channels = out_channels
-        self.num_res_blocks = num_res_blocks
-        self.attention_resolutions = attention_resolutions
-        self.dropout = dropout
-        self.channel_mult = channel_mult
-        self.conv_resample = conv_resample
-        self.num_classes = num_classes
-        self.use_checkpoint = use_checkpoint
-        self.num_heads = num_heads
+        self.in_channels = config.in_channels
+        self.model_channels = config.model_channels
+        self.out_channels = config.out_channels
+        self.num_res_blocks = config.num_res_blocks
+        self.attention_resolutions = config.attention_resolutions
+        self.dropout = config.dropout
+        self.channel_mult = config.channel_mult
+        self.conv_resample = config.conv_resample
+        self.num_classes = config.num_classes
+        self.use_checkpoint = config.use_checkpoint
+        self.num_heads = config.num_heads
         self.num_heads_upsample = num_heads_upsample
-        self.logits_mode = logits_mode
+        self.logits_mode = config.logits_mode
 
-        self.word_embedding = nn.Embedding(vocab_size, self.in_channels)
+        self.word_embedding = nn.Embedding(config.vocab_size, self.in_channels)
         if self.logits_mode == 2:
             # self.lm_head = nn.Linear(self.in_channels, vocab_size, bias=False)
-            self.lm_head = nn.Linear(self.in_channels, vocab_size, bias=True)
+            self.lm_head = nn.Linear(self.in_channels, config.vocab_size, bias=True)
 
         else:
-            self.lm_head = nn.Linear(self.in_channels, vocab_size)
+            self.lm_head = nn.Linear(self.in_channels, config.vocab_size)
         with torch.no_grad():
             self.lm_head.weight = self.word_embedding.weight
 
-        time_embed_dim = model_channels * 4
+        time_embed_dim = config.model_channels * 4
         self.time_embed = nn.Sequential(
-            nn.Linear(model_channels, time_embed_dim),
+            nn.Linear(config.model_channels, time_embed_dim),
             nn.SiLU(),
             nn.Linear(time_embed_dim, config.hidden_size),
         )
 
         if self.num_classes is not None:
-            self.label_emb = nn.Embedding(num_classes, time_embed_dim)
+            self.label_emb = nn.Embedding(config.num_classes, time_embed_dim)
 
 
         # self.input_up_proj = trans_nd(config, in_channels, model_channels // attention_head_size, attention_head_size)
-        self.input_up_proj = nn.Sequential(nn.Linear(in_channels, config.hidden_size),
+        self.input_up_proj = nn.Sequential(nn.Linear(config.in_channels, config.hidden_size),
                                               nn.Tanh(), nn.Linear(config.hidden_size, config.hidden_size))
     
         self.input_transformers = GodCasterEncoder(config)
+
+        self.vivit_processor = VivitImageProcessor()
+
+        self.vivit_model = VivitModel(config.vivit_config)
+
+        self.context_transformer = LongformerModel(config.text_config)
 
         self.register_buffer("position_ids", torch.arange(config.max_position_embeddings).expand((1, -1)))
         self.position_embeddings = nn.Embedding(config.max_position_embeddings, config.hidden_size)
@@ -106,7 +100,7 @@ class TransformerNetModel2(nn.Module):
 
 
         self.output_down_proj = nn.Sequential(nn.Linear(config.hidden_size, config.hidden_size),
-                                              nn.Tanh(), nn.Linear(config.hidden_size, out_channels))
+                                              nn.Tanh(), nn.Linear(config.hidden_size, config.out_channels))
 
 
     def get_embeds(self, input_ids):
@@ -182,7 +176,14 @@ class TransformerNetModel2(nn.Module):
         emb_inputs = self.position_embeddings(position_ids) + emb_x + emb.unsqueeze(1).expand(-1, seq_length, -1)
         emb_inputs = self.dropout(self.LayerNorm(emb_inputs))
 
-        input_trans_hidden_states = self.input_transformers(emb_inputs, video, text).last_hidden_state
+        text_emb = self.context_transformer(text)
+
+        video_emb = self.vivit_processor(video)
+
+        video_emb = self.vivit_model(video_emb)
+        
+
+        input_trans_hidden_states = self.input_transformers(emb_inputs, video_emb, text_emb).last_hidden_state
 
         h = self.output_down_proj(input_trans_hidden_states)
         
