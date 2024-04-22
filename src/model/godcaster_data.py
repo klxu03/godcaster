@@ -11,7 +11,7 @@ import numpy as np
 from torch.utils.data import Dataset
 
 
-class GodCasterDatasetProcess(Dataset):
+class GodCasterDataset(Dataset):
 
     def __init__(self, video_folder: str, caption_folder: str, sample_frames: int = 400) -> None:
         super().__init__()
