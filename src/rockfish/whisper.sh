@@ -23,8 +23,6 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=kxu39@jhu.edu
 #
-# Create a job array
-#SBATCH --array=0-119
 
 cd godcaster
 cd src/captions
