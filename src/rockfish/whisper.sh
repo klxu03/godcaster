@@ -28,4 +28,4 @@ cd godcaster
 cd src/captions
 
 # Go ahead and run the video splitting script to split a video by their round and properly store the clips
-poetry run python load_distributor.py 
+poetry run python main.py 0 0 
