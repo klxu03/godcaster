@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=godcaster_splits
-#SBATCH --output=out.godcaster_splits.log
-#SBATCH --error=err.godcaster_splits.log
+#SBATCH --job-name=godcaster_whisper
+#SBATCH --output=out.godcaster_whisper.log
+#SBATCH --error=err.godcaster_whisper.log
 #
 # Number of tasks needed for this job. Generally, used with MPI jobs
 #SBATCH --ntasks=1
@@ -30,4 +30,4 @@ cd godcaster
 cd src/captions
 
 # Go ahead and run the video splitting script to split a video by their round and properly store the clips
-poetry run python main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX
+poetry run python load_distributor.py 
