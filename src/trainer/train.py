@@ -5,22 +5,13 @@ Train a diffusion model on images.
 import argparse
 import json, torch, os
 import numpy as np
-from improved_diffusion import dist_util, logger
-from improved_diffusion.image_datasets import load_data
-from improved_diffusion.text_datasets import load_data_text
-from improved_diffusion.resample import create_named_schedule_sampler
-from improved_diffusion.script_util import (
-    model_and_diffusion_defaults,
-    create_model_and_diffusion,
-    args_to_dict,
-    add_dict_to_argparser,
-)
+from resample import create_named_schedule_sampler
 from transformers import AutoTokenizer
-from improved_diffusion.train_util import TrainLoop
+from godcaster_trainer import TrainLoop
 from transformers import set_seed
 from functools import partial
-from improved_diffusion.test_util import get_weights, compute_logp
-from improved_diffusion.rounding import load_models, load_tokenizer
+from test_util import get_weights, compute_logp
+
 import torch.distributed as dist
 import wandb
 
