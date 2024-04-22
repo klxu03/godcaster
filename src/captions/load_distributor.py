@@ -3,7 +3,7 @@ from moviepy.editor import VideoFileClip
 import math
 
 def load_distribute(max_index, ind):
-    dir_path = "/scratch/kxu39/merged/"
+    dir_path = "/scratch/kxu39/test/"
     subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
     print("subdirs", subdirs)
     num_vids = len(subdirs)
@@ -54,4 +54,4 @@ def load_distribute(max_index, ind):
     return indexes[ind]
 
 if __name__ == "__main__":
-    load_distribute(3, 0)
+    load_distribute(2, 0)
