@@ -40,10 +40,10 @@ def load_distribute(max_index, ind):
     for i in range(num_vids):
         dur = vid_with_len[0][1]
         if curr_sum + dur > threshold:
-            print("curr_sum", curr_sum, "dur", dur, "threshold", threshold)
+            # print("curr_sum", curr_sum, "dur", dur, "threshold", threshold)
             min_ind = min((index for index, (word, number) in enumerate(vid_with_len) if number >= threshold - curr_sum), key=lambda idx: vid_with_len[idx][1], default=None)
             curr_sum = 0
-            print("min_ind", min_ind)
+            # print("min_ind", min_ind)
             indexes[-1].append(vid_with_len[min_ind][0])
             vid_with_len.pop(min_ind)
 
@@ -54,13 +54,12 @@ def load_distribute(max_index, ind):
             indexes[-1].append(vid_with_len[0][0])
             vid_with_len.pop(0)
 
-        print("i", i, "indexes", indexes)
+        # print("i", i, "indexes", indexes)
 
     while len(indexes) <= max_index:
         indexes.append([])
 
     # print("indexes", indexes)
-    print(f"indexes[ind] for ind {ind} is {indexes[ind]}")
 
     with open("distributed_load.pkl", "wb") as f:
         pickle.dump(indexes, f)
