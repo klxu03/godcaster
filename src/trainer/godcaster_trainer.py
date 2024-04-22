@@ -40,6 +40,11 @@ class GodCasterConfig(PretrainedConfig):
         resume_checkpoint,
         vivit_config,
         text_config,
+        in_channels,
+        model_channels,
+        out_channels,
+        num_res_blocks,
+        attention_resolutions,
         use_fp16=False,
         fp16_scale_growth=1e-3,
         schedule_sampler=None,
@@ -67,6 +72,14 @@ class GodCasterConfig(PretrainedConfig):
         position_embedding_type="absolute",
         use_cache=True,
         classifier_dropout=None,
+        dropout=0,
+        channel_mult=(1, 2, 4, 8),
+        conv_resample=True,
+        num_classes=None,
+        use_checkpoint=False,
+        num_heads=1,
+        num_heads_upsample=-1,
+        logits_mode=1,
         **kwargs,
     ):
         super().__init__(pad_token_id=pad_token_id, bos_token_id=bos_token_id, eos_token_id=eos_token_id, **kwargs)
@@ -104,6 +117,21 @@ class GodCasterConfig(PretrainedConfig):
         self.gradient_clipping = gradient_clipping
         self.eval_data = eval_data
         self.eval_interval = eval_interval
+        self.in_channels = in_channels
+        self.model_channels = model_channels
+        self.out_channels = out_channels
+        self.num_res_blocks = num_res_blocks
+        self.attention_resolutions = attention_resolutions
+        self.dropout = dropout
+        self.channel_mult = channel_mult
+        self.conv_resample = conv_resample
+        self.num_classes = num_classes
+        self.use_checkpoint = use_checkpoint
+        self.num_heads = num_heads
+        self.num_heads_upsample = num_heads_upsample
+        self.logits_mode = logits_mode
+       
+      
         
 
 # For ImageNet experiments, this was a good default value.
