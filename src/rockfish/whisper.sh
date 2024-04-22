@@ -23,9 +23,11 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=kxu39@jhu.edu
 #
+# Create a job array
+#SBATCH --array=0-9
 
 cd godcaster
 cd src/captions
 
 # Go ahead and run the video splitting script to split a video by their round and properly store the clips
-poetry run python main.py 0 0 
+poetry run python main.py $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_MAX 
