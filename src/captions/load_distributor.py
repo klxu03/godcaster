@@ -5,14 +5,14 @@ import math
 def load_distribute(max_index, ind):
     dir_path = "/scratch/kxu39/merged/"
     subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
-    print("subdirs", subdirs)
+    # print("subdirs", subdirs)
     num_vids = len(subdirs)
-    print("num_vids", num_vids)
+    # print("num_vids", num_vids)
 
     vid_len = {}
     for subdir in subdirs:
         vid_list = [vid for vid in os.listdir(dir_path + subdir)]
-        print("vid_list", vid_list)
+        # print("vid_list", vid_list)
         sum = 0
         full_subdir_path = dir_path + subdir
         for i in range(len(vid_list)):
@@ -28,10 +28,10 @@ def load_distribute(max_index, ind):
         sum += v
 
     threshold = math.ceil(sum / float(max_index + 1))
-    print("threshold", threshold, "sum", sum)
+    # print("threshold", threshold, "sum", sum)
 
     vid_with_len.sort(key=lambda x: x[1], reverse=True)
-    print("vid_with_len", vid_with_len)
+    # print("vid_with_len", vid_with_len)
     
     indexes = [[]]
     curr_sum = 0
@@ -58,7 +58,8 @@ def load_distribute(max_index, ind):
     while len(indexes) <= max_index:
         indexes.append([])
 
-    print("indexes", indexes)
+    # print("indexes", indexes)
+    print(f"indexes[ind] for ind {ind} is {indexes[ind]}")
     return indexes[ind]
 
 if __name__ == "__main__":
