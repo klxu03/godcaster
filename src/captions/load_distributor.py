@@ -14,11 +14,12 @@ def load_distribute(max_index, ind):
         vid_list = [vid for vid in os.listdir(dir_path + subdir)]
         print("vid_list", vid_list)
         sum = 0
+        full_subdir_path = dir_path + subdir
         for i in range(len(vid_list)):
-            with VideoFileClip(f"{dir_path}{subdir}/{vid_list[i]}") as temp_vid:
+            with VideoFileClip(f"{full_subdir_path}/{vid_list[i]}") as temp_vid:
                 dur = temp_vid.duration
                 sum += dur
-        vid_len[subdir] = sum
+        vid_len[full_subdir_path] = sum
 
     vid_with_len = []
     sum = 0
