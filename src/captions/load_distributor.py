@@ -1,6 +1,7 @@
 import os
 from moviepy.editor import VideoFileClip
 import math
+import pickle
 
 def load_distribute(max_index, ind):
     dir_path = "/scratch/kxu39/merged/"
@@ -60,6 +61,10 @@ def load_distribute(max_index, ind):
 
     # print("indexes", indexes)
     print(f"indexes[ind] for ind {ind} is {indexes[ind]}")
+
+    with open("distributed_load.pkl", "wb") as f:
+        pickle.dump(indexes, f)
+
     return indexes[ind]
 
 if __name__ == "__main__":

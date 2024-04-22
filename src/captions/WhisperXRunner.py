@@ -1,6 +1,7 @@
 from WhisperX import WhisperX
 import json
 import os
+import sys
 
 class WhisperXRunner:
     def __init__(self, video_dir, output_dir, model_name="large-v3", compute_type="float16", batch_size=16):
@@ -17,3 +18,8 @@ class WhisperXRunner:
                 text = self.whisper.video_transcribe(video_path)
                 with open(os.path.join(self.output_dir,f'{name_ext[0]}.json'), "w") as f:
                     json.dump(text, f, indent=2)
+
+if __name__ == "__main__":
+    dir = sys.argv[1]
+    runner = WhisperXRunner(f"{dir}/", f"{dir}/", model_name="large-v3", compute_type="float16", batch_size=16)
+    runner.run()
