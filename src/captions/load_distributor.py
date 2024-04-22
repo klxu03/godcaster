@@ -4,22 +4,25 @@ import math
 
 def load_distribute(max_index, ind):
     dir_path = "/scratch/kxu39/merged/"
-    vid_list = os.listdir(dir_path)
-    num_vids = len(vid_list)
+    subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
+    print("subdirs", subdirs)
+    num_vids = len(subdirs)
+
+    vid_len = {}
+    for subdir in subdirs:
+        vid_list = [vid for vid in os.listdir(dir_path + subdir)]
+        sum = 0
+        for i in range(len(vid_list)):
+            with VideoFileClip(vid_list[i]) as temp_vid:
+                dur = temp_vid.duration
+                sum += dur
+        vid_len[subdir] = sum
 
     vid_with_len = []
-
     sum = 0
-    for i in range(num_vids):
-        if vid_list[i] == ".gitkeep":
-            continue
-
-        vid_list[i] = dir_path + vid_list[i]
-        with VideoFileClip(vid_list[i]) as temp_vid:
-            dur = temp_vid.duration
-            sum += dur
-
-        vid_with_len.append((vid_list[i], dur))
+    for k, v in vid_len.items():
+        vid_with_len.append((k, v))
+        sum += v
 
     threshold = math.ceil(sum / float(max_index + 1))
 
