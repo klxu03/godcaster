@@ -11,7 +11,7 @@ def load_distribute(max_index, ind):
 
     vid_len = {}
     for subdir in subdirs:
-        vid_list = [vid for vid in os.listdir(dir_path + subdir)]
+        vid_list = [vid for vid in os.listdir(os.path.join(dir_path, subdir)) if vid.endswith('.mp4')]
         # print("vid_list", vid_list)
         sum = 0
         full_subdir_path = dir_path + subdir
