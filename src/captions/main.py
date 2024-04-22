@@ -1,4 +1,4 @@
-from WhisperXRunner import WhisperXRunner
+import WhisperXRunner
 from load_distributor import load_distribute
 import sys
 
