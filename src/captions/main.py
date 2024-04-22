@@ -35,7 +35,8 @@ def main():
         print("Run load_distribute, couldn't find pkl")
         videos_to_split = load_distribute(max_index, index)
 
-    threading.Thread(target=worker, daemon=True).start()
+    for _ in range(10):
+        threading.Thread(target=worker, daemon=True).start()
 
     print("videos_to_split", videos_to_split)
     for video in videos_to_split:
