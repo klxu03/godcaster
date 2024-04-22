@@ -44,14 +44,14 @@ def load_distribute(max_index, ind):
             min_ind = min((index for index, (word, number) in enumerate(vid_with_len) if number >= threshold - curr_sum), key=lambda idx: vid_list[idx][1], default=None)
             print("min_ind", min_ind)
             indexes[-1].append(vid_with_len[min_ind][0])
-            vid_list.pop(min_ind)
+            vid_with_len.pop(min_ind)
 
             if len(indexes) < max_index:
                 indexes.append([])
         else:
             curr_sum += dur
             indexes[-1].append(vid_with_len[0][0])
-            vid_list.pop(0)
+            vid_with_len.pop(0)
 
         print("i", i, "indexes", indexes)
 
