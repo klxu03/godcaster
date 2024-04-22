@@ -19,12 +19,14 @@ from fp16_util import (
 )
 from nn import update_ema
 from resample import LossAwareSampler, UniformSampler
-from transformers.configuration_utils import PretrainedConfig
-
-from model.godcaster import GodCaster
-
 from respace import SpacedDiffusion
 
+
+from model.godcaster import GodCaster
+from model.godcaster_data import GodCasterDataset
+
+
+from transformers.configuration_utils import PretrainedConfig
 
 class GodCasterConfig(PretrainedConfig):
     model_type = "godcaster"
@@ -146,7 +148,7 @@ class TrainLoop:
         config: GodCasterConfig,
         model: GodCaster,
         diffusion: SpacedDiffusion,
-        data,
+        data: GodCasterDataset,
     ):
         self.model = model
         self.diffusion = diffusion
