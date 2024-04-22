@@ -11,6 +11,7 @@ def load_distribute(max_index, ind):
     vid_len = {}
     for subdir in subdirs:
         vid_list = [vid for vid in os.listdir(dir_path + subdir)]
+        print("vid_list", vid_list)
         sum = 0
         for i in range(len(vid_list)):
             with VideoFileClip(vid_list[i]) as temp_vid:
@@ -25,8 +26,10 @@ def load_distribute(max_index, ind):
         sum += v
 
     threshold = math.ceil(sum / float(max_index + 1))
+    print("threshold", threshold, "sum", sum)
 
     vid_with_len.sort(key=lambda x: x[1], reverse=True)
+    print("vid_with_len", vid_with_len)
     
     indexes = [[]]
     curr_sum = 0
@@ -47,4 +50,8 @@ def load_distribute(max_index, ind):
     while len(indexes) <= max_index:
         indexes.append([])
 
+    print("indexes", indexes)
     return indexes[ind]
+
+if __name__ == "__main__":
+    load_distribute(3, 0)
