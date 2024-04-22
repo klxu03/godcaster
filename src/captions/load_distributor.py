@@ -39,6 +39,7 @@ def load_distribute(max_index, ind):
     for i in range(num_vids):
         dur = vid_with_len[0][1]
         if curr_sum + dur > threshold:
+            print("curr_sum", curr_sum, "dur", dur, "threshold", threshold)
             curr_sum = 0
             min_ind = min((index for index, (word, number) in enumerate(vid_with_len) if number >= threshold - curr_sum), key=lambda idx: vid_list[idx][1], default=None)
             print("min_ind", min_ind)
