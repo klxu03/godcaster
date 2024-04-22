@@ -68,4 +68,4 @@ def load_distribute(max_index, ind):
     return indexes[ind]
 
 if __name__ == "__main__":
-    load_distribute(2, 0)
+    load_distribute(10, 0)
