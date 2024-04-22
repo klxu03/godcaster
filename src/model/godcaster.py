@@ -8,7 +8,7 @@ import torch.nn as nn
 
 from godcaster_encoder import GodCasterEncoder
 
-class TransformerNetModel2(nn.Module):
+class GodCaster(nn.Module):
     """
     The full UNet model with attention and timestep embedding.
 
@@ -41,7 +41,6 @@ class TransformerNetModel2(nn.Module):
         dropout=0,
         channel_mult=(1, 2, 4, 8),
         conv_resample=True,
-        dims=2,
         num_classes=None,
         use_checkpoint=False,
         num_heads=1,
