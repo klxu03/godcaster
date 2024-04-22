@@ -3,6 +3,7 @@ from load_distributor import load_distribute
 import sys
 import os.path
 import pickle
+from LoggingSubprocess import LoggingSubprocess
 
 def main():
     index = int(sys.argv[1]) # 0-indexed
@@ -18,8 +19,8 @@ def main():
 
     print("videos_to_split", videos_to_split)
     for video in videos_to_split:
-        runner = WhisperXRunner(f"{video}/", f"{video}/", model_name="large-v3", compute_type="float16", batch_size=16)
-        runner.run()
+        command = f"poetry run python WhisperXRunner.py {video}"
+        LoggingSubprocess(command, shell=False).start()
 
 if __name__ == "__main__":
     main()
