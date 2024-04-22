@@ -7,6 +7,7 @@ def load_distribute(max_index, ind):
     subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
     print("subdirs", subdirs)
     num_vids = len(subdirs)
+    print("num_vids", num_vids)
 
     vid_len = {}
     for subdir in subdirs:
