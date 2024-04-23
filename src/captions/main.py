@@ -20,11 +20,16 @@ def worker():
         except queue.Queue.Empty:
             break
 
-        print(f'Working on {item}')
-        runner.run(item, item)
-        print(f'Finished {item}')
+        try:
+            print(f'Working on {item}')
+            runner.run(item, item)
+            print(f'Finished {item}')
 
-        q.task_done()
+            q.task_done()
+        except:
+            print("Runner run failed, retrying item", item)
+            q.put(item)
+            pass
 
 def main():
     index = int(sys.argv[1]) # 0-indexed
@@ -38,7 +43,8 @@ def main():
         print("Run load_distribute, couldn't find pkl")
         videos_to_split = load_distribute(max_index, index)
 
-    for _ in range(3):
+    NUM_THREADS = 8
+    for _ in range(NUM_THREADS):
         threading.Thread(target=worker, daemon=True).start()
 
     print("videos_to_split", videos_to_split)

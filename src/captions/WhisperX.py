@@ -32,6 +32,4 @@ class WhisperX:
 
         result = whisperx.assign_word_speakers(diarize_segments, result)
         
-        print("Diarize segments", diarize_segments)
-        print("Result segments", result["segments"])
         return result["segments"]
