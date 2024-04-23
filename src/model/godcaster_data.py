@@ -4,80 +4,115 @@ import json
 
 import math
 
-import av
+from typing import List
+
+import cv2
 
 import numpy as np
 
 from torch.utils.data import Dataset
 
-
 class GodCasterDataset(Dataset):
 
-    def __init__(self, video_folder: str, caption_folder: str, sample_frames: int = 400) -> None:
+    def __init__(self, video_folder: str, caption_folder: str) -> None:
         super().__init__()
 
         self.video_folder = video_folder
 
         self.caption_folder = caption_folder
 
-        self.sample_frames = sample_frames
+        self.video_files = sorted(self.read_folder(self.video_folder, ".mp4"))
 
-        self.video_files = sorted([os.path.join(self.video_folder, x) for x in os.listdir(self.video_folder)])
+        self.caption_files = sorted(self.read_folder(self.caption_folder, ".json"))
 
-        self.caption_files = sorted([os.path.join(self.caption_folder, x) for x in os.listdir(self.caption_folder)])
+        index_lengths = []
+
+        for caption_file in self.caption_files:
+            with open(caption_file, "r") as f:
+                data = json.load(f)
+            index_lengths.append(len(data))
+        
+        index_cumulative_lengths = list(np.cumsum(index_lengths))
+
+        self.len = sum(index_cumulative_lengths)
+    
+        self.index_map = dict(zip(index_cumulative_lengths, list(zip(self.video_files, self.caption_files))))
+        
+    
+    def read_folder(self, folder: str, ext: str) -> List[str]:
+        total_files = [] 
+
+        for root, dirs, files in os.walk(folder):
+            for name in files:
+                if ext in name:
+                    total_files.append(os.path.join(root, name))
+        
+        return total_files
 
     def __len__(self):
-        return len(self.video_files)
+        return self.len
     
     def __getitem__(self, index):
-        video_file_to_be_processed = self.video_files[index]
 
-        with open(self.caption_files[index]) as f:
+        og_index = index
+
+        while index not in self.index_map:
+            index -= 1
+
+        file_pair = self.index_map[index]
+
+        with open(file_pair[1]) as f:
             captions = f.read()
 
-        container = av.open(video_file_to_be_processed)
+        container = cv2.VideoCapture(file_pair[0])
 
-        number_of_frames = container.streams.video[0].frames
+        FPS = container.get(cv2.CAP_PROP_FPS)
 
-        indicies = self.sample_frame_indices(self.sample_frames, number_of_frames)
+        sentence_index = og_index - index
 
-        return self.read_video_av(container, indicies), captions
-    
-    def sample_frame_indices(self, sample_frames, frame_length_of_clip):
-        initial_burst_sample = list(range(50))
+        sentence_start_frame = math.ceil(captions[sentence_index]["start"] * FPS)
 
-        step_size = (2/3)*(frame_length_of_clip - 50)/(sample_frames - 50)
+        if sentence_start_frame < 230:
+            num_copies = 230//sentence_start_frame
 
-        num_frames_third = math.floor((1/3)*(frame_length_of_clip - 50)/step_size)
+            left_over = 230 % sentence_start_frame
 
-        num_frames_two_third = math.ceil((2/3)*(frame_length_of_clip - 50)/(2*step_size))
+            indicies = [0]*(num_copies + left_over)
 
-        third_partition_entities = np.floor(np.linspace(50, 50+(frame_length_of_clip - 50)//3, num=num_frames_third))
+            for i in range(1, sentence_start_frame):
+                indicies += [i]*num_copies
 
-        two_third_partition_entities = np.floor(np.linspace(50+(frame_length_of_clip - 50)//3, frame_length_of_clip, num=num_frames_two_third))
+        elif sentence_start_frame < FPS * 60:
+            indicies = list(np.linspace(0, sentence_start_frame, num=230))
+        else:
+            indicies = self.sample_frame_indices(sentence_start_frame, FPS)
 
-        return initial_burst_sample + list(third_partition_entities) + list(two_third_partition_entities)
-       
-
-    def read_video_pyav(self, container, indices):
-        '''
-        Decode the video with PyAV decoder.
-        Args:
-            container (`av.container.input.InputContainer`): PyAV container.
-            indices (`List[int]`): List of frame indices to decode.
-        Returns:
-            result (np.ndarray): np array of decoded frames of shape (num_frames, height, width, 3).
-        '''
         frames = []
-        container.seek(0)
-        start_index = indices[0]
-        end_index = indices[-1]
-        for i, frame in enumerate(container.decode(video=0)):
-            if i > end_index:
-                break
-            if i >= start_index and i in indices:
-                frames.append(frame)
-        return np.stack([x.to_ndarray(format="rgb24") for x in frames]) 
+
+        for index in indicies:
+            container.set(cv2.CAP_PROP_POS_FRAMES, index)
+
+            _, frame = container.read()
+
+            frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+
+        return frames, " ".join([x["text"] for x in captions[:sentence_index]]), captions[sentence_index]["text"]
+    
+    # Assumes we are over a minute long length
+    def sample_frame_indices(self, frame_length_of_clip, FPS):
+        initial_rate = FPS // 5
+
+        ret = [i*initial_rate for i in range(50)]
+
+        new_tot = frame_length_of_clip - math.ceil(10 * FPS)
+        
+        first_third = np.ceil(np.linspace(0, new_tot // 3, num=90) + math.ceil(10 * FPS))
+
+        second_third = np.ceil(np.linspace(new_tot//3, new_tot, num=90) + math.ceil(10 * FPS))
+
+        return ret + list(first_third) + list(second_third)
+       
 
 
     
