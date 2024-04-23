@@ -21,6 +21,7 @@ ffmpeg-python = "^0.2.0"
 easyocr = "^1.7.1"
 opencv-python = "^4.9.0.80"
 moviepy = "^1.0.3"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

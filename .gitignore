@@ -3,3 +3,4 @@
 /src/data/sample2.webm
 /src/data/subsample/*
 */.DSTORE
+.env

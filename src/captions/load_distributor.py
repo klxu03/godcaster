@@ -1,9 +1,10 @@
 import os
 from moviepy.editor import VideoFileClip
 import math
+import pickle
 
 def load_distribute(max_index, ind):
-    dir_path = "/scratch/kxu39/merged/"
+    dir_path = "/scratch/kxu39/test/"
     subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
     # print("subdirs", subdirs)
     num_vids = len(subdirs)
@@ -39,10 +40,10 @@ def load_distribute(max_index, ind):
     for i in range(num_vids):
         dur = vid_with_len[0][1]
         if curr_sum + dur > threshold:
-            print("curr_sum", curr_sum, "dur", dur, "threshold", threshold)
-            min_ind = min((index for index, (word, number) in enumerate(vid_with_len) if number >= threshold - curr_sum), key=lambda idx: vid_list[idx][1], default=None)
+            # print("curr_sum", curr_sum, "dur", dur, "threshold", threshold)
+            min_ind = min((index for index, (word, number) in enumerate(vid_with_len) if number >= threshold - curr_sum), key=lambda idx: vid_with_len[idx][1], default=None)
             curr_sum = 0
-            print("min_ind", min_ind)
+            # print("min_ind", min_ind)
             indexes[-1].append(vid_with_len[min_ind][0])
             vid_with_len.pop(min_ind)
 
@@ -53,14 +54,17 @@ def load_distribute(max_index, ind):
             indexes[-1].append(vid_with_len[0][0])
             vid_with_len.pop(0)
 
-        print("i", i, "indexes", indexes)
+        # print("i", i, "indexes", indexes)
 
     while len(indexes) <= max_index:
         indexes.append([])
 
     # print("indexes", indexes)
-    print(f"indexes[ind] for ind {ind} is {indexes[ind]}")
+
+    with open("distributed_load.pkl", "wb") as f:
+        pickle.dump(indexes, f)
+
     return indexes[ind]
 
 if __name__ == "__main__":
-    load_distribute(2, 0)
+    load_distribute(10, 0)
