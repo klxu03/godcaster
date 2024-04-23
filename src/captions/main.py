@@ -43,7 +43,7 @@ def main():
         print("Run load_distribute, couldn't find pkl")
         videos_to_split = load_distribute(max_index, index)
 
-    NUM_THREADS = 9
+    NUM_THREADS = 8
     for _ in range(NUM_THREADS):
         threading.Thread(target=worker, daemon=True).start()
 
