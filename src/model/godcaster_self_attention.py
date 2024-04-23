@@ -98,9 +98,9 @@ class GodCasterSelfAttention(nn.Module):
         text_emb = self.text(text)
         embeddings_emb = self.embeddings(hidden_states)
 
-        q = torch.cat(video_emb, text_emb)
+        q = torch.cat(text_emb, video_emb)
         k = torch.cat(embeddings_emb, video_emb)
-        v = torch.cat(embeddings_emb, text_emb)
+        v = torch.cat(text_emb, embeddings_emb)
         
         q /= math.sqrt(self.head_dim)
 
