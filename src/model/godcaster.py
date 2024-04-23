@@ -86,12 +86,6 @@ class GodCaster(nn.Module):
     
         self.input_transformers = GodCasterEncoder(config)
 
-        self.vivit_processor = VivitImageProcessor()
-
-        self.vivit_model = VivitModel(config.vivit_config)
-
-        self.context_transformer = LongformerModel(config.text_config)
-
         self.register_buffer("position_ids", torch.arange(config.max_position_embeddings).expand((1, -1)))
         self.position_embeddings = nn.Embedding(config.max_position_embeddings, config.hidden_size)
         # self.token_type_embeddings = nn.Embedding(config.type_vocab_size, config.hidden_size)
@@ -176,14 +170,7 @@ class GodCaster(nn.Module):
         emb_inputs = self.position_embeddings(position_ids) + emb_x + emb.unsqueeze(1).expand(-1, seq_length, -1)
         emb_inputs = self.dropout(self.LayerNorm(emb_inputs))
 
-        text_emb = self.context_transformer(text)
-
-        video_emb = self.vivit_processor(video)
-
-        video_emb = self.vivit_model(video_emb)
-        
-
-        input_trans_hidden_states = self.input_transformers(emb_inputs, video_emb, text_emb).last_hidden_state
+        input_trans_hidden_states = self.input_transformers(emb_inputs, video, text).last_hidden_state
 
         h = self.output_down_proj(input_trans_hidden_states)
         

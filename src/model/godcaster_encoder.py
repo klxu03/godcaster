@@ -7,9 +7,10 @@ from transformers.modeling_outputs import BaseModelOutputWithPastAndCrossAttenti
 
 from godcaster_layer import GodCasterLayer
 
+from trainer.godcaster_trainer import GodCasterConfig
 
 class GodCasterEncoder(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config: GodCasterConfig):
         super().__init__()
         self.config = config
         self.layer = nn.ModuleList([GodCasterLayer(config) for _ in range(config.num_hidden_layers)])

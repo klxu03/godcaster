@@ -9,7 +9,7 @@ from longformer_utils.diagonaled_mm_tvm import diagonaled_mm as diagonaled_mm_tv
 from longformer_utils.sliding_chunks import sliding_chunks_matmul_qk, sliding_chunks_matmul_pv
 from longformer_utils.sliding_chunks import sliding_chunks_no_overlap_matmul_qk, sliding_chunks_no_overlap_matmul_pv
 
-from ..trainer.godcaster_trainer import GodCasterConfig
+from trainer.godcaster_trainer import GodCasterConfig
 
 class GodCasterSelfAttention(nn.Module):
     def __init__(self, config: GodCasterConfig, layer_id):

@@ -4,8 +4,10 @@ import torch.nn as nn
 
 from transformers.activations import ACT2FN
 
+from trainer.godcaster_trainer import GodCasterConfig
+
 class GodCasterIntermediate(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config: GodCasterConfig):
         super().__init__()
         self.dense = nn.Linear(config.hidden_size, config.intermediate_size)
         if isinstance(config.hidden_act, str):

@@ -10,9 +10,11 @@ from godcaster_self_attention import GodCasterSelfAttention
 from godcaster_output import GodCasterOutput
 from godcaster_intermediate import GodCasterIntermediate
 
+from trainer.godcaster_trainer import GodCasterConfig
+
 
 class GodCasterLayer(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config: GodCasterConfig):
         super().__init__()
         self.chunk_size_feed_forward = config.chunk_size_feed_forward
         self.seq_len_dim = 1
