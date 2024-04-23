@@ -148,11 +148,15 @@ class TrainLoop:
         config: GodCasterConfig,
         model: GodCaster,
         diffusion: SpacedDiffusion,
+        vivit_model,
+        longformer_context_model,
         data: GodCasterDataset,
     ):
         self.model = model
         self.diffusion = diffusion
         self.data = data
+        self.vivit_model = vivit_model
+        self.longformer_context_model = longformer_context_model
         self.eval_data = config.eval_data
         self.batch_size = config.batch_size
         self.microbatch = config.microbatch if config.microbatch > 0 else config.batch_size
@@ -272,13 +276,20 @@ class TrainLoop:
             not self.lr_anneal_steps
             or self.step + self.resume_step < self.lr_anneal_steps
         ):
-            batch, cond = next(self.data)
-            self.run_step(batch, cond)
+            raw_batch = next(self.data)
+
+            video_embeds = self.vivit_model(raw_batch[0])
+
+            previous_context_embeds = self.longformer_context_model(raw_batch[1])
+
+            input_tokens = raw_batch[2]
+
+            self.run_step(input_tokens, previous_context_embeds, video_embeds)
             if self.step % self.log_interval == 0:
                 logger.dumpkvs()
             if self.eval_data is not None and self.step % self.eval_interval == 0:
                 batch_eval, cond_eval = next(self.eval_data)
-                self.forward_only(batch, cond)
+                self.forward_only(input_tokens, previous_context_embeds, video_embeds)
                 print('eval on validation set')
                 logger.dumpkvs()
             if self.step % self.save_interval == 0:
@@ -291,32 +302,35 @@ class TrainLoop:
         if (self.step - 1) % self.save_interval != 0:
             self.save()
 
-    def run_step(self, batch, cond):
-        self.forward_backward(batch, cond)
+    def run_step(self, input_tokens, previous_context_embeds, video_embeds):
+        self.forward_backward(input_tokens, previous_context_embeds, video_embeds)
         if self.use_fp16:
             self.optimize_fp16()
         else:
             self.optimize_normal()
         self.log_step()
 
-    def forward_only(self, batch, cond):
+    def forward_only(self, input_tokens, previous_context_embeds, video_embeds):
         with th.no_grad():
             zero_grad(self.model_params)
-            for i in range(0, batch.shape[0], self.microbatch):
-                micro = batch[i: i + self.microbatch].to(dist_util.dev())
-                micro_cond = {
-                    k: v[i: i + self.microbatch].to(dist_util.dev())
-                    for k, v in cond.items()
-                }
-                last_batch = (i + self.microbatch) >= batch.shape[0]
-                t, weights = self.schedule_sampler.sample(micro.shape[0], dist_util.dev())
+            for i in range(0, input_tokens.shape[0], self.microbatch):
+                
+                micro_batch_tokens = input_tokens[i: i + self.microbatch].to(dist_util.dev())
+
+                micro_batch_previous_context = previous_context_embeds[i: i + self.microbatch].to(dist_util.dev())
+
+                micro_batch_video_embeds = video_embeds[i: i + self.microbatch].to(dist_util.dev())
+
+                last_batch = (i + self.microbatch) >= input_tokens.shape[0]
+                t, weights = self.schedule_sampler.sample(micro_batch_tokens.shape[0], dist_util.dev())
                 # print(micro_cond.keys())
                 compute_losses = functools.partial(
                     self.diffusion.training_losses,
                     self.ddp_model,
-                    micro,
+                    micro_batch_tokens,
+                    micro_batch_previous_context,
+                    micro_batch_video_embeds,
                     t,
-                    model_kwargs=micro_cond,
                 )
 
                 if last_batch or not self.use_ddp:
@@ -330,23 +344,25 @@ class TrainLoop:
                 )
 
 
-    def forward_backward(self, batch, cond):
+    def forward_backward(self, input_tokens, previous_context_embeds, video_embeds):
         zero_grad(self.model_params)
-        for i in range(0, batch.shape[0], self.microbatch):
-            micro = batch[i : i + self.microbatch].to(dist_util.dev())
-            micro_cond = {
-                k: v[i : i + self.microbatch].to(dist_util.dev())
-                for k, v in cond.items()
-            }
-            last_batch = (i + self.microbatch) >= batch.shape[0]
-            t, weights = self.schedule_sampler.sample(micro.shape[0], dist_util.dev())
+        for i in range(0, input_tokens.shape[0], self.microbatch):
+            micro_batch_tokens = input_tokens[i: i + self.microbatch].to(dist_util.dev())
+
+            micro_batch_previous_context = previous_context_embeds[i: i + self.microbatch].to(dist_util.dev())
+
+            micro_batch_video_embeds = video_embeds[i: i + self.microbatch].to(dist_util.dev())
+
+            last_batch = (i + self.microbatch) >= input_tokens.shape[0]
+            t, weights = self.schedule_sampler.sample(micro_batch_tokens.shape[0], dist_util.dev())
             # print(micro_cond.keys())
             compute_losses = functools.partial(
                 self.diffusion.training_losses,
                 self.ddp_model,
-                micro,
+                micro_batch_tokens,
+                micro_batch_previous_context,
+                micro_batch_video_embeds,
                 t,
-                model_kwargs=micro_cond,
             )
 
             if last_batch or not self.use_ddp:
