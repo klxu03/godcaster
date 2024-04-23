@@ -6,9 +6,12 @@ import pickle
 
 import threading
 import queue
+from dotenv import load_dotenv
 
 q = queue.Queue()
-runner = WhisperXRunner(model_name="large-v3", compute_type="float16", batch_size=16)
+load_dotenv()
+HF_TOKEN = os.getenv("HF_TOKEN")
+runner = WhisperXRunner(model_name="large-v3", compute_type="float16", batch_size=16, hf_token=HF_TOKEN)
 
 def worker():
     while True:
