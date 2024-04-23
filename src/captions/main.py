@@ -13,18 +13,18 @@ load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
 runner = WhisperXRunner(model_name="large-v3", compute_type="float16", batch_size=16, hf_token=HF_TOKEN)
 
-def worker():
-    while True:
-        try:
-            item = q.get()
-        except queue.Queue.Empty:
-            break
+class worker(threading.Thread):
+    def __init__(self, q):
+        threading.Thread.__init__(self)
+        self.q = q
 
-        print(f'Working on {item}')
-        runner.run(item, item)
-        print(f'Finished {item}')
-
-        q.task_done()
+    def run(self):
+        for item in iter(self.q.get, None):
+            print(f'Working on {item}')
+            runner.run(item, item)
+            print(f'Finished {item}')
+            self.q.task_done()
+        self.q.task_done() # thread is done now
 
 def main():
     index = int(sys.argv[1]) # 0-indexed
@@ -38,8 +38,11 @@ def main():
         print("Run load_distribute, couldn't find pkl")
         videos_to_split = load_distribute(max_index, index)
 
-    for _ in range(3):
-        threading.Thread(target=worker, daemon=True).start()
+    NUM_THREADS = 3
+    for _ in range(NUM_THREADS):
+        work = worker(q)
+        work.setDaemon(True)
+        work.start()
 
     print("videos_to_split", videos_to_split)
     for video in videos_to_split:
