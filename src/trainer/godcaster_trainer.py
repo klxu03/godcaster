@@ -349,21 +349,21 @@ class TrainLoop:
         for i in range(0, input_tokens.shape[0], self.microbatch):
             micro_batch_tokens = input_tokens[i: i + self.microbatch].to(dist_util.dev())
 
-            micro_batch_previous_context = previous_context_embeds[i: i + self.microbatch].to(dist_util.dev())
+                micro_batch_previous_context = previous_context_embeds[i: i + self.microbatch].to(dist_util.dev())
 
-            micro_batch_video_embeds = video_embeds[i: i + self.microbatch].to(dist_util.dev())
+                micro_batch_video_embeds = video_embeds[i: i + self.microbatch].to(dist_util.dev())
 
-            last_batch = (i + self.microbatch) >= input_tokens.shape[0]
-            t, weights = self.schedule_sampler.sample(micro_batch_tokens.shape[0], dist_util.dev())
-            # print(micro_cond.keys())
-            compute_losses = functools.partial(
-                self.diffusion.training_losses,
-                self.ddp_model,
-                micro_batch_tokens,
-                micro_batch_previous_context,
-                micro_batch_video_embeds,
-                t,
-            )
+                last_batch = (i + self.microbatch) >= input_tokens.shape[0]
+                t, weights = self.schedule_sampler.sample(micro_batch_tokens.shape[0], dist_util.dev())
+                # print(micro_cond.keys())
+                compute_losses = functools.partial(
+                    self.diffusion.training_losses,
+                    self.ddp_model,
+                    micro_batch_tokens,
+                    micro_batch_previous_context,
+                    micro_batch_video_embeds,
+                    t,
+                )
 
             if last_batch or not self.use_ddp:
                 losses = compute_losses()
