@@ -14,7 +14,7 @@ from torch.utils.data import Dataset
 
 class GodCasterDataset(Dataset):
 
-    def __init__(self, video_folder: str, caption_folder: str) -> None:
+    def __init__(self, video_folder: str, caption_folder: str, tokenizer, vivit_processor) -> None:
         super().__init__()
 
         self.video_folder = video_folder
@@ -37,8 +37,11 @@ class GodCasterDataset(Dataset):
         self.len = sum(index_cumulative_lengths)
     
         self.index_map = dict(zip(index_cumulative_lengths, list(zip(self.video_files, self.caption_files))))
+
+        self.tokenizer = self.tokenizer
+
+        self.vivit_processor = vivit_processor
         
-    
     def read_folder(self, folder: str, ext: str) -> List[str]:
         total_files = [] 
 
@@ -97,8 +100,13 @@ class GodCasterDataset(Dataset):
             _, frame = container.read()
 
             frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        
+        input_tokens = self.tokenizer(" ".join([x["text"] for x in captions[:sentence_index]]), return_tensors="pt")
+        output_tokens = self.tokenizer(captions[sentence_index]["text"], return_tensors="pt")
 
-        return frames, " ".join([x["text"] for x in captions[:sentence_index]]), captions[sentence_index]["text"]
+        preprocessed_frames = self.vivit_processor(frames, return_tensors="pt")
+
+        return preprocessed_frames, input_tokens, output_tokens
     
     # Assumes we are over a minute long length
     def sample_frame_indices(self, frame_length_of_clip, FPS):
