@@ -4,7 +4,7 @@ import math
 import pickle
 
 def load_distribute(max_index, ind):
-    dir_path = "/scratch/kxu39/test/"
+    dir_path = "/scratch/kxu39/merged/"
     subdirs = [dir for dir in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, dir))]
     # print("subdirs", subdirs)
     num_vids = len(subdirs)
