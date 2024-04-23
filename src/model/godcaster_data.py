@@ -87,6 +87,8 @@ class GodCasterDataset(Dataset):
         else:
             indicies = self.sample_frame_indices(sentence_start_frame, FPS)
 
+        indicies = [sentence_start_frame-x for x in indicies][::-1]
+
         frames = []
 
         for index in indicies:
@@ -95,7 +97,6 @@ class GodCasterDataset(Dataset):
             _, frame = container.read()
 
             frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-
 
         return frames, " ".join([x["text"] for x in captions[:sentence_index]]), captions[sentence_index]["text"]
     
