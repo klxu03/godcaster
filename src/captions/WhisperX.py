@@ -27,7 +27,7 @@ class WhisperX:
             result = self.model.transcribe(audio, batch_size=self.BATCH_SIZE)
         result = whisperx.align(result["segments"], self.model_align, self.metadata, audio, self.device, return_char_alignments=False)
 
-        diarize_model = whisperx.DiarizationPipeline(self.hf_token, device="cuda")
+        diarize_model = whisperx.DiarizationPipeline(use_auth_token=self.hf_token, device="cuda")
         diarize_segments = diarize_model(audio)
 
         result = whisperx.assign_word_speakers(diarize_segments, result)
