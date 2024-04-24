@@ -45,6 +45,9 @@ def main():
         
         videos_to_split = [f"/scratch/kxu39/{i}" for i in invalid_directories] 
         multithread = False
+
+        print("videos_to_split", videos_to_split)
+        return
     elif os.path.isfile("./distributed_load.pkl"):
         with open("distributed_load.pkl", "rb") as f:
             indexes = pickle.load(f)
