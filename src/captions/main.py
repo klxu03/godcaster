@@ -43,7 +43,7 @@ def main():
         with open("invalid_directories.txt", "r") as f:
             invalid_directories = f.read().split("\n")
         
-        videos_to_split = [f"/scratch/kxu39/{i}" for i in invalid_directories] 
+        videos_to_split = [f"/scratch/kxu39/{i}" for i in invalid_directories if i.strip()] 
         multithread = False
 
         print("videos_to_split", videos_to_split)
