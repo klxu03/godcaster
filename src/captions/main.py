@@ -35,7 +35,15 @@ def main():
     index = int(sys.argv[1]) # 0-indexed
     max_index = int(sys.argv[2])
 
-    if os.path.isfile("./distributed_load.pkl"):
+    multithread = True
+
+    if os.path.file("./invalid_directories.txt"):
+        with open("invalid_directories.txt", "r") as f:
+            invalid_directories = f.read().split("\n")
+        
+        videos_to_split = [f"/scratch/kxu39/{i}" for i in invalid_directories] 
+        multithread = False
+    elif os.path.isfile("./distributed_load.pkl"):
         with open("distributed_load.pkl", "rb") as f:
             indexes = pickle.load(f)
         videos_to_split = indexes[index]
@@ -43,15 +51,20 @@ def main():
         print("Run load_distribute, couldn't find pkl")
         videos_to_split = load_distribute(max_index, index)
 
-    NUM_THREADS = 8
-    for _ in range(NUM_THREADS):
-        threading.Thread(target=worker, daemon=True).start()
+    if multithread:
+        NUM_THREADS = 8
+        for _ in range(NUM_THREADS):
+            threading.Thread(target=worker, daemon=True).start()
 
-    print("videos_to_split", videos_to_split)
-    for video in videos_to_split:
-        q.put(f"{video}/")
+        print("videos_to_split", videos_to_split)
+        for video in videos_to_split:
+            q.put(f"{video}/")
 
-    q.join()
+        q.join()
+    else:
+        for video in videos_to_split:
+            runner.run(video, video)
+
     print("Finished index", index)
 
 
