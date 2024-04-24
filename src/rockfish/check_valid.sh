@@ -25,6 +25,12 @@
 # Initialize count of valid directories
 valid_dirs=0
 
+# File to write invalid directories
+invalid_file="invalid_directories.txt"
+
+# Clear the file at the start of the script
+> "$invalid_file"
+
 # Iterate over each subdirectory in the current directory
 for dir in */; do
   if [ -d "$dir" ]; then  # Ensure it's a directory
@@ -46,6 +52,9 @@ for dir in */; do
     # If all .mp4 files had corresponding .json files, increment the count
     if $all_matched; then
       ((valid_dirs++))
+    else
+      # Log the directory path to the invalid file
+      echo "$dir" >> "$invalid_file"
     fi
   fi
 done
