@@ -65,6 +65,7 @@ def main():
         q.join()
     else:
         for video in videos_to_split:
+            print(f"Working on {video}")
             runner.run(video, video)
 
     print("Finished index", index)
