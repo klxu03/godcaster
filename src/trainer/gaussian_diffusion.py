@@ -1452,7 +1452,7 @@ class GaussianDiffusion:
         return {'pred_xprev':pred_prev, 'pred_xstart':pred_xstart}
 
 
-    def training_losses_e2e(self, model, x_start, t, model_kwargs=None, noise=None):
+    def training_losses_e2e(self, model, x, video, text, t, model_kwargs=None, noise=None):
         """
         Compute training losses for a single timestep.
 
@@ -1465,8 +1465,7 @@ class GaussianDiffusion:
         :return: a dict with the key "loss" containing a tensor of shape [N].
                  Some mean or variance settings may also have other keys.
         """
-        assert 'input_ids' in model_kwargs
-        input_ids = model_kwargs.pop('input_ids').to(t.device)
+        input_ids = x.pop('input_ids').to(t.device)
         x_start_mean = model.model.module.get_embeds(input_ids)
         if self.model_arch == 'conv-unet':
             seqlen = int(np.sqrt(input_ids.size(1)))
@@ -1507,7 +1506,7 @@ class GaussianDiffusion:
 
         elif self.loss_type == LossType.E2E_MSE or self.loss_type == LossType.E2E_RESCALED_MSE:
             # print(x_t.shape)
-            model_output = model(x_t, self._scale_timesteps(t), **model_kwargs)
+            model_output = model(x_t, video, text, self._scale_timesteps(t), **model_kwargs)
 
             if self.model_var_type in [
                 ModelVarType.LEARNED,
@@ -1582,7 +1581,7 @@ class GaussianDiffusion:
 
         return terms
 
-    def training_losses_e2e_simple(self, model, x_start, t, model_kwargs=None, noise=None):
+    def training_losses_e2e_simple(self, model, x, video, text, t, model_kwargs=None, noise=None):
         """
         Compute training losses for a single timestep.
 
@@ -1595,9 +1594,8 @@ class GaussianDiffusion:
         :return: a dict with the key "loss" containing a tensor of shape [N].
                  Some mean or variance settings may also have other keys.
         """
-        assert 'input_ids' in model_kwargs
         x_start = None
-        input_ids = model_kwargs.pop('input_ids').to(t.device)
+        input_ids = x.pop('input_ids').to(t.device)
         x_start_mean = model.model.module.get_embeds(input_ids)
         if self.model_arch == 'conv-unet':
             seqlen = int(np.sqrt(input_ids.size(1)))
@@ -1635,7 +1633,7 @@ class GaussianDiffusion:
         elif self.loss_type == LossType.E2E_Simple_MSE:
             # print('simple mse training ')
             # print(x_t.shape)
-            model_output = model(x_t, self._scale_timesteps(t), **model_kwargs)
+            model_output = model(x_t, video, text, self._scale_timesteps(t), **model_kwargs)
 
             if self.model_var_type in [
                 ModelVarType.LEARNED,

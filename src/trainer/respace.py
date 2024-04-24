@@ -117,7 +117,7 @@ class _WrappedModel:
         self.rescale_timesteps = rescale_timesteps
         self.original_num_steps = original_num_steps
 
-    def __call__(self, x, ts, **kwargs):
+    def __call__(self, x, video, text, ts, **kwargs):
         # print(ts)
         map_tensor = th.tensor(self.timestep_map, device=ts.device, dtype=ts.dtype)
         new_ts = map_tensor[ts]
@@ -128,4 +128,4 @@ class _WrappedModel:
         # print(temp.shape)
         # return temp
         # print(new_ts)
-        return self.model(x, new_ts, **kwargs)
+        return self.model(x, video, text, new_ts, **kwargs)
