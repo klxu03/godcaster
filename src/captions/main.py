@@ -24,12 +24,12 @@ def worker():
             print(f'Working on {item}')
             runner.run(item, item)
             print(f'Finished {item}')
-
-            q.task_done()
         except:
             print("Runner run failed, retrying item", item)
             q.put(item)
             pass
+        finally:
+            q.task_done()
 
     q.task_done()
 
