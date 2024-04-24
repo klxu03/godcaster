@@ -31,6 +31,8 @@ def worker():
             q.put(item)
             pass
 
+    q.task_done()
+
 def main():
     index = int(sys.argv[1]) # 0-indexed
     max_index = int(sys.argv[2])
