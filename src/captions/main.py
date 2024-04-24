@@ -39,7 +39,7 @@ def main():
 
     multithread = True
 
-    if os.path.file("./invalid_directories.txt"):
+    if os.path.isfile("./invalid_directories.txt"):
         with open("invalid_directories.txt", "r") as f:
             invalid_directories = f.read().split("\n")
         
