@@ -2,6 +2,7 @@
 /src/data/sample.mkv
 /src/data/sample2.webm
 /src/data/subsample/*
+/src/data/invalid_vids/*
 */.DSTORE
 .env
 test.ipynb
