@@ -44,7 +44,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer("pe", pe)
 
     def forward(self, x):
-        x = x + (self.pe[:, :x.shape[1], :]).requires_grad(False)
+        x = x + (self.pe[:, :x.shape[1], :]).requires_grad_(False)
         return self.dropout(x)
 
 class LayerNormalization(nn.Module):
@@ -88,13 +88,14 @@ class MultiHeadAttentionBlock(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    @staticmethod
-    def attention(query, key, value, mask, dropout: nn.Dropout):
+    def attention(self, query, key, value, mask, dropout: nn.Dropout):
         d_k = query.shape[-1]
         
         attention_scores = (query @ key.transpose(-2, -1)) / math.sqrt(d_k)
         if mask is not None:
-            attention_scores.maked_fill_(mask == 0, -1e9)
+            print("attention_scores shape", attention_scores.shape)
+            print("mask shape", mask.shape)
+            attention_scores.masked_fill_(mask == 0, -1e9)
         
         attention_scores = attention_scores.softmax(dim=-1) # (batch, h, seq_len, seq_len)
 
@@ -114,7 +115,7 @@ class MultiHeadAttentionBlock(nn.Module):
         key = key.view(key.shape[0], key.shape[1], self.heads, self.d_k).transpose(1, 2)
         value = value.view(value.shape[0], value.shape[1], self.heads, self.d_k).transpose(1, 2)
 
-        x, self.attention_scores = MultiHeadAttentionBlock.attention(query, key, value, mask, self.dropout)
+        x, self.attention_scores = self.attention(query, key, value, mask, self.dropout)
 
         # (batch, heads, seq_len, d_k) -> (batch, seq_len, d_model)
         x = x.transpose(1, 2).contiguous().view(x.shape[0], -1, self.d_model)

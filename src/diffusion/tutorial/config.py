@@ -2,11 +2,12 @@ from pathlib import Path
 
 def get_config():
     return {
-        "batch_size": 8,
+        "batch_size": 24,
         "num_epochs": 20,
         "lr": 1e-4,
         "seq_len": 350,
         "d_model": 512,
+        "datasource": "Helsinki-NLP/opus_books",
         "lang_src": "en",
         "lang_tgt": "it",
         "model_folder": "weights",

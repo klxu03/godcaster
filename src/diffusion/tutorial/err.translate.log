@@ -1,0 +1,37 @@
+Processing epoch 00:   0%|          | 0/1213 [00:00<?, ?it/s]Processing epoch 00:   0%|          | 0/1213 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/trainer.py", line 219, in <module>
+    train_model(config)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/trainer.py", line 110, in train_model
+    decoder_output = model.decode(encoder_output, encoder_mask, decoder_input, decoder_mask) # (batch, seq_len, d_model)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 219, in decode
+    return self.decoder(tgt, encoder_output, src_mask, tgt_mask)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 189, in forward
+    x = layer(x, encoder_output, src_mask, tgt_mask)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 175, in forward
+    x = self.residual_connections[0](x, lambda x: self.self_attention_block(x, x, x, tgt_mask))
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 132, in forward
+    return x + self.dropout(sublayer(self.norm(x)))
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 175, in <lambda>
+    x = self.residual_connections[0](x, lambda x: self.self_attention_block(x, x, x, tgt_mask))
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/kxu39/.cache/pypoetry/virtualenvs/godcaster-7p0vqGGz-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 118, in forward
+    x, self.attention_scores = self.attention(query, key, value, mask, self.dropout)
+  File "/home/kxu39/godcaster/src/diffusion/tutorial/model.py", line 98, in attention
+    attention_scores.masked_fill_(mask == 0, -1e9)
+RuntimeError: The expanded size of the tensor (8) must match the existing size (24) at non-singleton dimension 1.  Target sizes: [24, 8, 350, 350].  Tensor sizes: [24, 350, 350]

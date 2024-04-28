@@ -1,0 +1,16 @@
+Max length of source sentence: 309
+Max length of target sentence: 274
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 1, 1, 350])
+attention_scores shape torch.Size([24, 8, 350, 350])
+mask shape torch.Size([24, 350, 350])
