@@ -95,6 +95,7 @@ class MultiHeadAttentionBlock(nn.Module):
         if mask is not None:
             print("attention_scores shape", attention_scores.shape)
             print("mask shape", mask.shape)
+
             attention_scores.masked_fill_(mask == 0, -1e9)
         
         attention_scores = attention_scores.softmax(dim=-1) # (batch, h, seq_len, seq_len)
@@ -211,11 +212,13 @@ class Transformer(nn.Module):
     def encode(self, src, src_mask):
         src = self.src_embed(src)
         src = self.src_pos(src)
+
         return self.encoder(src, src_mask)
 
     def decode(self, encoder_output, src_mask, tgt, tgt_mask):
         tgt = self.tgt_embed(tgt)
         tgt = self.tgt_pos(tgt)
+
         return self.decoder(tgt, encoder_output, src_mask, tgt_mask)
 
     def project(self, x):

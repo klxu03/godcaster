@@ -71,7 +71,7 @@ def get_ds(config):
     return train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt
 
 def get_model(config, vocab_src_len, vocab_tgt_len):
-    model = build_transformer(vocab_src_len, vocab_tgt_len, config["seq_len"], config['seq_len'], d_model=config['d_model'])
+    model = build_transformer(vocab_src_len, vocab_tgt_len, config["seq_len"], config['seq_len'], d_model=config['d_model'], heads=config["heads"])
     return model
 
 def train_model(config):
@@ -106,6 +106,24 @@ def train_model(config):
             encoder_mask = batch["encoder_mask"].to(device)
             decoder_mask = batch["decoder_mask"].to(device)
 
+            print("before encoder mask shape", encoder_mask.shape)
+            if encoder_mask.dim() < 4: 
+                encoder_mask = encoder_mask.unsqueeze(1)
+            if encoder_mask.size(1) != config["heads"] and encoder_mask.size(1) == 1:
+                encoder_mask = encoder_mask.repeat(1, config["heads"], 1, 1)
+            elif encoder_mask.size(1) != config["heads"]:
+                print("src_mask head dimension shape is weird, it is", encoder_mask.size(1))
+            print("encoder mask final shape", encoder_mask.shape)
+
+            print("before decoder mask shape", decoder_mask.shape)
+            if decoder_mask.dim() < 4: 
+                decoder_mask = decoder_mask.unsqueeze(1)
+            if decoder_mask.size(1) != config["heads"] and decoder_mask.size(1) == 1:
+                decoder_mask = decoder_mask.repeat(1, config["heads"], 1, 1)
+            elif decoder_mask.size(1) != config["heads"]:
+                print("tgt_mask head dimension shape is weird, it is", decoder_mask.size(1))
+            print("decoder mask final shape", decoder_mask.shape)
+
             encoder_output = model.encode(encoder_input, encoder_mask) # output: (batch, seq_len, d_model)
             decoder_output = model.decode(encoder_output, encoder_mask, decoder_input, decoder_mask) # (batch, seq_len, d_model)
             proj_output = model.project(decoder_output) # (batch, seq_len, tgt_vocab_size)
@@ -114,7 +132,7 @@ def train_model(config):
 
             # (batch, seq_len, tgt_vocab_size) -> (batch * seq_len, tgt_vocab_size)
             loss = loss_fn(proj_output.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
-            batch_iterator.set_postfix(f"loss: {loss.item():6.3f}")
+            print("loss", loss.item())
 
             loss.backward()
 
