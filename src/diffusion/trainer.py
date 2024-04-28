@@ -81,6 +81,7 @@ class DiffusionTrainer:
             (self.batch_size, self.model.config.in_channels, self.IMG_SIZE // 8, self.IMG_SIZE // 8),
             device=self.device
         )
+        print(f"Latents shape {latents.shape}")
 
         for t in tqdm(self.scheduler.timesteps):
             latent_model_input = torch.cat([latents] * 2)
@@ -108,7 +109,7 @@ class DiffusionTrainer:
 
 if __name__ == "__main__":
     time_steps = 25
-    trainer = DiffusionTrainer(time_steps, 512, 1, 7.5)
+    trainer = DiffusionTrainer(time_steps, 128, 1, 7.5)
     # trainer.load_dataset()
 
     trainer.inference(["A car with a red color"])
