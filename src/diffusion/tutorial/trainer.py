@@ -92,6 +92,7 @@ def train_model(config):
         model_filename = get_weights_file_path(config, config["preload"])
         print(f"Preloading model {model_filename}")
         state = torch.load(model_filename)
+        model.load_state_dict(state["model_state_dict"])
         initial_epoch = state["epoch"] + 1
         optimizer.load_state_dict(state["optimizer_state_dict"])
         global_step = state["global_step"]
@@ -166,17 +167,24 @@ def train_model(config):
 def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_len, device):
     sos_idx = tokenizer_tgt.token_to_id('[SOS]')
     eos_idx = tokenizer_tgt.token_to_id('[EOS]')
+    pad_idx = tokenizer_tgt.token_to_id("[PAD]")
 
     # Precompute the encoder output and reuse it for every step
     encoder_output = model.encode(source, source_mask)
+    print("encoder source", source)
+    print("encoder_output", encoder_output)
     # Initialize the decoder input with the sos token
     decoder_input = torch.empty(1, 1).fill_(sos_idx).type_as(source).to(device)
+    padding_tokens = torch.full((1, max_len - 1), pad_idx, dtype=torch.long, device=device)
+    decoder_input = torch.cat([decoder_input, padding_tokens], dim=1)
+    curr_len = 1
     while True:
-        if decoder_input.size(1) == max_len:
+        if curr_len == max_len:
             break
 
         # build mask for target
-        decoder_mask = causal_mask(decoder_input.size(1)).type_as(source_mask).to(device)
+        decoder_mask = (decoder_input != pad_idx).unsqueeze(0).int() & causal_mask(decoder_input.size(0)).to(device) # (1, seq_len) broadcasted with & (1, seq_len, seq_len)
+        print("decoder_mask shape", decoder_mask.size())
 
         # calculate output
         out = model.decode(encoder_output, source_mask, decoder_input, decoder_mask)
@@ -184,9 +192,11 @@ def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_
         # get next token
         prob = model.project(out[:, -1])
         _, next_word = torch.max(prob, dim=1)
-        decoder_input = torch.cat(
-            [decoder_input, torch.empty(1, 1).type_as(source).fill_(next_word.item()).to(device)], dim=1
-        )
+        print(eos_idx, "next_word", next_word.item())
+
+        # Replace the first padding token with the next word
+        decoder_input[0, curr_len] = next_word.item()
+        curr_len += 1
 
         if next_word == eos_idx:
             break
@@ -217,10 +227,18 @@ def run_validation(model, validation_ds, tokenizer_src, tokenizer_tgt, max_len, 
             encoder_input = batch["encoder_input"].to(device) # (b, seq_len)
             encoder_mask = batch["encoder_mask"].to(device) # (b, 1, 1, seq_len)
 
+            if encoder_mask.dim() < 4: 
+                encoder_mask = encoder_mask.unsqueeze(1)
+            if encoder_mask.size(1) != config["heads"] and encoder_mask.size(1) == 1:
+                encoder_mask = encoder_mask.repeat(1, config["heads"], 1, 1)
+            elif encoder_mask.size(1) != config["heads"]:
+                print("src_mask head dimension shape is weird, it is", encoder_mask.size(1))
+
             # check that the batch size is 1
             assert encoder_input.size(
                 0) == 1, "Batch size must be 1 for validation"
 
+            print("encoder_mask shape", encoder_mask.size())
             model_out = greedy_decode(model, encoder_input, encoder_mask, tokenizer_src, tokenizer_tgt, max_len, device)
 
             source_text = batch["src_text"][0]
@@ -240,8 +258,73 @@ def run_validation(model, validation_ds, tokenizer_src, tokenizer_tgt, max_len, 
             if count == num_examples:
                 print_msg('-'*console_width)
                 break
+
+def inference(config, input: str):
+    assert torch.cuda.is_available(), "You need a GPU to run this code"
+    device = torch.device("cuda")
+
+    Path(config["model_folder"]).mkdir(parents=True, exist_ok=True)
+    _, _, tokenizer_src, tokenizer_tgt = get_ds(config)
+
+    model = get_model(config, tokenizer_src.get_vocab_size(), tokenizer_tgt.get_vocab_size()).to(device)
+
+    model_filename = get_weights_file_path(config, f"05")
+    print(f"Preloading model {model_filename}")
+    state = torch.load(model_filename)
+    model.load_state_dict(state["model_state_dict"])
+
+    model.eval()
+
+    try:
+        # get the console window width
+        with os.popen('stty size', 'r') as console:
+            _, console_width = console.read().split()
+            console_width = int(console_width)
+    except:
+        # If we can't get the console width, use 80 as default
+        console_width = 80
+
+    enc_input_tokens = tokenizer_src.encode(input).ids
+    enc_num_padding_tokens = config["seq_len"] - len(enc_input_tokens) - 2
+    sos_token = torch.tensor([tokenizer_src.token_to_id("[SOS]")], dtype=torch.int64)
+    eos_token = torch.tensor([tokenizer_src.token_to_id("[EOS]")], dtype=torch.int64)
+    pad_token = torch.tensor([tokenizer_src.token_to_id("[PAD]")], dtype=torch.int64)
+    encoder_input = torch.cat(
+        [
+            sos_token,
+            torch.tensor(enc_input_tokens, dtype=torch.int64),
+            eos_token,
+            torch.tensor([pad_token] * enc_num_padding_tokens, dtype=torch.int64),
+        ]
+    )
+
+    assert encoder_input.size(0) == config["seq_len"]
+
+    encoder_mask = (encoder_input != pad_token).unsqueeze(1)
+    encoder_mask = encoder_mask * encoder_mask.transpose(0, 1)
+    encoder_mask = encoder_mask.unsqueeze(0)
+    encoder_mask = encoder_mask.int()
+
+    if encoder_mask.dim() < 4: 
+        encoder_mask = encoder_mask.unsqueeze(1)
+    if encoder_mask.size(1) != config["heads"] and encoder_mask.size(1) == 1:
+        encoder_mask = encoder_mask.repeat(1, config["heads"], 1, 1)
+    elif encoder_mask.size(1) != config["heads"]:
+        print("src_mask head dimension shape is weird, it is", encoder_mask.size(1))
+
+    print("encoder_mask shape", encoder_mask.size())
+
+    with torch.no_grad():
+        model_out = greedy_decode(model, encoder_input.unsqueeze(0).to(device), encoder_mask.to(device), tokenizer_src, tokenizer_tgt, config['seq_len'], device)
+        model_out_text = tokenizer_tgt.decode(model_out.detach().cpu().numpy())
+
+        # Print the source, target and model output
+        print('-'*console_width)
+        print(f"{f'SOURCE: ':>12}{input}")
+        print(f"{f'PREDICTED: ':>12}{model_out_text}")
     
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     config = get_config()
-    train_model(config)
+    # train_model(config)
+    inference(config, "I love hot dog")
