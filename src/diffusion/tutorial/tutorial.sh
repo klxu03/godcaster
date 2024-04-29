@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=debug
-#SBATCH --output=out.debug.log
-#SBATCH --error=err.debug.log
+#SBATCH --job-name=translate
+#SBATCH --output=out.translate.log
+#SBATCH --error=err.translate.log
 #
 # Number of tasks needed for this job. Generally, used with MPI jobs
 #SBATCH --ntasks=1
