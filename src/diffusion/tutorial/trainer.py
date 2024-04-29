@@ -15,8 +15,9 @@ import warnings
 from dataset import BilingualDataset, causal_mask
 from model import build_transformer
 from config import get_weights_file_path, get_config
-import torchmetrics
 import os
+
+import matplotlib.pyplot as plt
 
 def get_all_sentences(ds, lang):
     for item in ds:
@@ -97,6 +98,8 @@ def train_model(config):
 
     loss_fn = nn.CrossEntropyLoss(ignore_index=tokenizer_src.token_to_id("[PAD]"), label_smoothing=0.1)
 
+    losses = []
+
     for epoch in range(initial_epoch, config["num_epochs"]):
         model.train()
         batch_iterator = tqdm(train_dataloader, desc=f"Processing epoch {epoch:02d}")
@@ -106,23 +109,19 @@ def train_model(config):
             encoder_mask = batch["encoder_mask"].to(device)
             decoder_mask = batch["decoder_mask"].to(device)
 
-            print("before encoder mask shape", encoder_mask.shape)
             if encoder_mask.dim() < 4: 
                 encoder_mask = encoder_mask.unsqueeze(1)
             if encoder_mask.size(1) != config["heads"] and encoder_mask.size(1) == 1:
                 encoder_mask = encoder_mask.repeat(1, config["heads"], 1, 1)
             elif encoder_mask.size(1) != config["heads"]:
                 print("src_mask head dimension shape is weird, it is", encoder_mask.size(1))
-            print("encoder mask final shape", encoder_mask.shape)
 
-            print("before decoder mask shape", decoder_mask.shape)
             if decoder_mask.dim() < 4: 
                 decoder_mask = decoder_mask.unsqueeze(1)
             if decoder_mask.size(1) != config["heads"] and decoder_mask.size(1) == 1:
                 decoder_mask = decoder_mask.repeat(1, config["heads"], 1, 1)
             elif decoder_mask.size(1) != config["heads"]:
                 print("tgt_mask head dimension shape is weird, it is", decoder_mask.size(1))
-            print("decoder mask final shape", decoder_mask.shape)
 
             encoder_output = model.encode(encoder_input, encoder_mask) # output: (batch, seq_len, d_model)
             decoder_output = model.decode(encoder_output, encoder_mask, decoder_input, decoder_mask) # (batch, seq_len, d_model)
@@ -132,7 +131,7 @@ def train_model(config):
 
             # (batch, seq_len, tgt_vocab_size) -> (batch * seq_len, tgt_vocab_size)
             loss = loss_fn(proj_output.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
-            print("loss", loss.item())
+            losses.append(loss.item())
 
             loss.backward()
 
@@ -152,6 +151,17 @@ def train_model(config):
             "optimizer_state_dict": optimizer.state_dict(),
             "global_step": global_step
         }, model_filename)
+
+        print("current losses:", losses)
+
+    # Plot losses
+    plt.plot(losses)
+    plt.xlabel("Batches")
+    plt.ylabel("Loss")
+    plt.title("Loss over time")
+
+    plt.savefig("loss_graph.png")
+    plt.close()
 
 def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_len, device):
     sos_idx = tokenizer_tgt.token_to_id('[SOS]')

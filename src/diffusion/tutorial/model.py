@@ -93,9 +93,6 @@ class MultiHeadAttentionBlock(nn.Module):
         
         attention_scores = (query @ key.transpose(-2, -1)) / math.sqrt(d_k)
         if mask is not None:
-            print("attention_scores shape", attention_scores.shape)
-            print("mask shape", mask.shape)
-
             attention_scores.masked_fill_(mask == 0, -1e9)
         
         attention_scores = attention_scores.softmax(dim=-1) # (batch, h, seq_len, seq_len)

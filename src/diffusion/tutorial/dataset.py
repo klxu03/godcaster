@@ -63,7 +63,9 @@ class BilingualDataset(Dataset):
         assert decoder_input.size(0) == self.seq_len
         assert label.size(0) == self.seq_len
 
-        encoder_mask = (encoder_input != self.pad_token).unsqueeze(0).unsqueeze(0).int() # (1, 1, seq_len)
+        encoder_mask = (encoder_input != self.pad_token).unsqueeze(1)
+        encoder_mask = encoder_mask * encoder_mask.transpose(0, 1)
+        encoder_mask = encoder_mask.int()
         decoder_mask = (decoder_input != self.pad_token).unsqueeze(0).int() & causal_mask(decoder_input.size(0)) # (1, seq_len) broadcasted with & (1, seq_len, seq_len)
 
         return {
